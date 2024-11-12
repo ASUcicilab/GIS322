@@ -65,6 +65,7 @@ Copy the name of the GitHub repository (https://github.com/ASUcicilab/GIS322) in
 You will get a rendered repo: https://nbviewer.org/github/ASUcicilab/GIS322/tree/main/notebook/
 
 *Notice that nbviewer has caching issue, it won’t change in time if you make changes on GitHub after you render any page in your repository. So the best practice is to ensure everything in the repo is good to go, then render this repo. One walkaround is to rename your repo, and render it again. 
+*It may take hours to get the final change. Afer successfully render the repo, contents in the canvas will change directly
 
 (4) Go to Canvas, change the link to the rendered GitHub page:
 Click "Edit", shift to html editor:
