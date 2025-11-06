@@ -7517,7 +7517,7 @@ a.anchor-link {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p><a href="https://colab.research.google.com/github/ASUcicilab/GIS322/blob/main/notebook/Module_5_(3)_Geocoding.ipynb" target="_parent"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg"/></a></p>
+<p><a href="https://colab.research.google.com/github/Chenyan-Lu/GIS322/blob/main/notebook/Module_5_(3)_Geocoding.ipynb" target="_parent"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg"/></a></p>
 </div>
 </div>
 </div>
@@ -7590,8 +7590,8 @@ Above is my apartment address, is someone living close to me?
 <br/>
 And next, let's try to convert this address to coordinates. The command is:</p>
 <p><br/>
-<code>geopandas.tools.geocode.eocode(my_address, provider='nominatim')</code></p>
-<p>where we use the OpenStreetMap's Nominatim's geocoding service.</p>
+<code>geopandas.tools.geocode.eocode(my_address, provider='photon')</code></p>
+<p>where we use the OpenStreetMap's Photon's geocoding service.This is a open-source geocoder that can be used directly without any API key.</p>
 </div>
 </div>
 </div>
@@ -7600,14 +7600,15 @@ And next, let's try to convert this address to coordinates. The command is:</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [2]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [3]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>geopandas
 <span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>geopandas<span class="w"> </span>geopy
 <span class="kn">from</span><span class="w"> </span><span class="nn">geopandas.tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">geocode</span>
-<span class="c1"># Geocode addresses with Nominatim backend</span>
-<span class="n">coords</span> <span class="o">=</span> <span class="n">geocode</span><span class="p">(</span><span class="n">my_address</span><span class="p">,</span> <span class="n">provider</span><span class="o">=</span><span class="s1">'nominatim'</span><span class="p">,</span> <span class="n">user_agent</span><span class="o">=</span><span class="s1">'autogis_xx'</span><span class="p">)</span>
+<span class="c1"># Geocode addresses with Photon backend, the 'timeout' here is used to sets the maximum number of seconds your code wait for the Photon geocoding request to respond.</span>
+<span class="c1"># If no response arrives within 10 seconds, the call times out, and you can set a longer 'timeout' at this circumstance</span>
+<span class="n">coords</span> <span class="o">=</span> <span class="n">geocode</span><span class="p">(</span><span class="n">my_address</span><span class="p">,</span> <span class="n">provider</span><span class="o">=</span><span class="s1">'photon'</span><span class="p">,</span><span class="n">timeout</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -7620,39 +7621,32 @@ And next, let's try to convert this address to coordinates. The command is:</p>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Requirement already satisfied: geopandas in /Users/xiaochen/Documents/project/work/TA/2023-Fall/GIS322/Github_Code/ASU-GIS322-cicilab/class/lib/python3.13/site-packages (1.1.1)
-Requirement already satisfied: numpy&gt;=1.24 in /Users/xiaochen/Documents/project/work/TA/2023-Fall/GIS322/Github_Code/ASU-GIS322-cicilab/class/lib/python3.13/site-packages (from geopandas) (2.3.3)
-Requirement already satisfied: pyogrio&gt;=0.7.2 in /Users/xiaochen/Documents/project/work/TA/2023-Fall/GIS322/Github_Code/ASU-GIS322-cicilab/class/lib/python3.13/site-packages (from geopandas) (0.11.1)
-Requirement already satisfied: packaging in /Users/xiaochen/Documents/project/work/TA/2023-Fall/GIS322/Github_Code/ASU-GIS322-cicilab/class/lib/python3.13/site-packages (from geopandas) (25.0)
-Requirement already satisfied: pandas&gt;=2.0.0 in /Users/xiaochen/Documents/project/work/TA/2023-Fall/GIS322/Github_Code/ASU-GIS322-cicilab/class/lib/python3.13/site-packages (from geopandas) (2.3.3)
-Requirement already satisfied: pyproj&gt;=3.5.0 in /Users/xiaochen/Documents/project/work/TA/2023-Fall/GIS322/Github_Code/ASU-GIS322-cicilab/class/lib/python3.13/site-packages (from geopandas) (3.7.2)
-Requirement already satisfied: shapely&gt;=2.0.0 in /Users/xiaochen/Documents/project/work/TA/2023-Fall/GIS322/Github_Code/ASU-GIS322-cicilab/class/lib/python3.13/site-packages (from geopandas) (2.1.1)
-Requirement already satisfied: python-dateutil&gt;=2.8.2 in /Users/xiaochen/Documents/project/work/TA/2023-Fall/GIS322/Github_Code/ASU-GIS322-cicilab/class/lib/python3.13/site-packages (from pandas&gt;=2.0.0-&gt;geopandas) (2.9.0.post0)
-Requirement already satisfied: pytz&gt;=2020.1 in /Users/xiaochen/Documents/project/work/TA/2023-Fall/GIS322/Github_Code/ASU-GIS322-cicilab/class/lib/python3.13/site-packages (from pandas&gt;=2.0.0-&gt;geopandas) (2025.2)
-Requirement already satisfied: tzdata&gt;=2022.7 in /Users/xiaochen/Documents/project/work/TA/2023-Fall/GIS322/Github_Code/ASU-GIS322-cicilab/class/lib/python3.13/site-packages (from pandas&gt;=2.0.0-&gt;geopandas) (2025.2)
-Requirement already satisfied: certifi in /Users/xiaochen/Documents/project/work/TA/2023-Fall/GIS322/Github_Code/ASU-GIS322-cicilab/class/lib/python3.13/site-packages (from pyogrio&gt;=0.7.2-&gt;geopandas) (2025.10.5)
-Requirement already satisfied: six&gt;=1.5 in /Users/xiaochen/Documents/project/work/TA/2023-Fall/GIS322/Github_Code/ASU-GIS322-cicilab/class/lib/python3.13/site-packages (from python-dateutil&gt;=2.8.2-&gt;pandas&gt;=2.0.0-&gt;geopandas) (1.17.0)
-Requirement already satisfied: geopandas in /Users/xiaochen/Documents/project/work/TA/2023-Fall/GIS322/Github_Code/ASU-GIS322-cicilab/class/lib/python3.13/site-packages (1.1.1)
-Collecting geopy
-  Downloading geopy-2.4.1-py3-none-any.whl.metadata (6.8 kB)
-Requirement already satisfied: numpy&gt;=1.24 in /Users/xiaochen/Documents/project/work/TA/2023-Fall/GIS322/Github_Code/ASU-GIS322-cicilab/class/lib/python3.13/site-packages (from geopandas) (2.3.3)
-Requirement already satisfied: pyogrio&gt;=0.7.2 in /Users/xiaochen/Documents/project/work/TA/2023-Fall/GIS322/Github_Code/ASU-GIS322-cicilab/class/lib/python3.13/site-packages (from geopandas) (0.11.1)
-Requirement already satisfied: packaging in /Users/xiaochen/Documents/project/work/TA/2023-Fall/GIS322/Github_Code/ASU-GIS322-cicilab/class/lib/python3.13/site-packages (from geopandas) (25.0)
-Requirement already satisfied: pandas&gt;=2.0.0 in /Users/xiaochen/Documents/project/work/TA/2023-Fall/GIS322/Github_Code/ASU-GIS322-cicilab/class/lib/python3.13/site-packages (from geopandas) (2.3.3)
-Requirement already satisfied: pyproj&gt;=3.5.0 in /Users/xiaochen/Documents/project/work/TA/2023-Fall/GIS322/Github_Code/ASU-GIS322-cicilab/class/lib/python3.13/site-packages (from geopandas) (3.7.2)
-Requirement already satisfied: shapely&gt;=2.0.0 in /Users/xiaochen/Documents/project/work/TA/2023-Fall/GIS322/Github_Code/ASU-GIS322-cicilab/class/lib/python3.13/site-packages (from geopandas) (2.1.1)
-Collecting geographiclib&lt;3,&gt;=1.52 (from geopy)
-  Downloading geographiclib-2.1-py3-none-any.whl.metadata (1.6 kB)
-Requirement already satisfied: python-dateutil&gt;=2.8.2 in /Users/xiaochen/Documents/project/work/TA/2023-Fall/GIS322/Github_Code/ASU-GIS322-cicilab/class/lib/python3.13/site-packages (from pandas&gt;=2.0.0-&gt;geopandas) (2.9.0.post0)
-Requirement already satisfied: pytz&gt;=2020.1 in /Users/xiaochen/Documents/project/work/TA/2023-Fall/GIS322/Github_Code/ASU-GIS322-cicilab/class/lib/python3.13/site-packages (from pandas&gt;=2.0.0-&gt;geopandas) (2025.2)
-Requirement already satisfied: tzdata&gt;=2022.7 in /Users/xiaochen/Documents/project/work/TA/2023-Fall/GIS322/Github_Code/ASU-GIS322-cicilab/class/lib/python3.13/site-packages (from pandas&gt;=2.0.0-&gt;geopandas) (2025.2)
-Requirement already satisfied: certifi in /Users/xiaochen/Documents/project/work/TA/2023-Fall/GIS322/Github_Code/ASU-GIS322-cicilab/class/lib/python3.13/site-packages (from pyogrio&gt;=0.7.2-&gt;geopandas) (2025.10.5)
-Requirement already satisfied: six&gt;=1.5 in /Users/xiaochen/Documents/project/work/TA/2023-Fall/GIS322/Github_Code/ASU-GIS322-cicilab/class/lib/python3.13/site-packages (from python-dateutil&gt;=2.8.2-&gt;pandas&gt;=2.0.0-&gt;geopandas) (1.17.0)
-Downloading geopy-2.4.1-py3-none-any.whl (125 kB)
-Downloading geographiclib-2.1-py3-none-any.whl (40 kB)
-Installing collected packages: geographiclib, geopy
-   <span class="ansi-black-intense-fg">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-green-fg">2/2</span> [geopy]
-Successfully installed geographiclib-2.1 geopy-2.4.1
+<pre>Requirement already satisfied: geopandas in /usr/local/lib/python3.12/dist-packages (1.1.1)
+Requirement already satisfied: numpy&gt;=1.24 in /usr/local/lib/python3.12/dist-packages (from geopandas) (2.0.2)
+Requirement already satisfied: pyogrio&gt;=0.7.2 in /usr/local/lib/python3.12/dist-packages (from geopandas) (0.11.1)
+Requirement already satisfied: packaging in /usr/local/lib/python3.12/dist-packages (from geopandas) (25.0)
+Requirement already satisfied: pandas&gt;=2.0.0 in /usr/local/lib/python3.12/dist-packages (from geopandas) (2.2.2)
+Requirement already satisfied: pyproj&gt;=3.5.0 in /usr/local/lib/python3.12/dist-packages (from geopandas) (3.7.2)
+Requirement already satisfied: shapely&gt;=2.0.0 in /usr/local/lib/python3.12/dist-packages (from geopandas) (2.1.2)
+Requirement already satisfied: python-dateutil&gt;=2.8.2 in /usr/local/lib/python3.12/dist-packages (from pandas&gt;=2.0.0-&gt;geopandas) (2.9.0.post0)
+Requirement already satisfied: pytz&gt;=2020.1 in /usr/local/lib/python3.12/dist-packages (from pandas&gt;=2.0.0-&gt;geopandas) (2025.2)
+Requirement already satisfied: tzdata&gt;=2022.7 in /usr/local/lib/python3.12/dist-packages (from pandas&gt;=2.0.0-&gt;geopandas) (2025.2)
+Requirement already satisfied: certifi in /usr/local/lib/python3.12/dist-packages (from pyogrio&gt;=0.7.2-&gt;geopandas) (2025.10.5)
+Requirement already satisfied: six&gt;=1.5 in /usr/local/lib/python3.12/dist-packages (from python-dateutil&gt;=2.8.2-&gt;pandas&gt;=2.0.0-&gt;geopandas) (1.17.0)
+Requirement already satisfied: geopandas in /usr/local/lib/python3.12/dist-packages (1.1.1)
+Requirement already satisfied: geopy in /usr/local/lib/python3.12/dist-packages (2.4.1)
+Requirement already satisfied: numpy&gt;=1.24 in /usr/local/lib/python3.12/dist-packages (from geopandas) (2.0.2)
+Requirement already satisfied: pyogrio&gt;=0.7.2 in /usr/local/lib/python3.12/dist-packages (from geopandas) (0.11.1)
+Requirement already satisfied: packaging in /usr/local/lib/python3.12/dist-packages (from geopandas) (25.0)
+Requirement already satisfied: pandas&gt;=2.0.0 in /usr/local/lib/python3.12/dist-packages (from geopandas) (2.2.2)
+Requirement already satisfied: pyproj&gt;=3.5.0 in /usr/local/lib/python3.12/dist-packages (from geopandas) (3.7.2)
+Requirement already satisfied: shapely&gt;=2.0.0 in /usr/local/lib/python3.12/dist-packages (from geopandas) (2.1.2)
+Requirement already satisfied: geographiclib&lt;3,&gt;=1.52 in /usr/local/lib/python3.12/dist-packages (from geopy) (2.1)
+Requirement already satisfied: python-dateutil&gt;=2.8.2 in /usr/local/lib/python3.12/dist-packages (from pandas&gt;=2.0.0-&gt;geopandas) (2.9.0.post0)
+Requirement already satisfied: pytz&gt;=2020.1 in /usr/local/lib/python3.12/dist-packages (from pandas&gt;=2.0.0-&gt;geopandas) (2025.2)
+Requirement already satisfied: tzdata&gt;=2022.7 in /usr/local/lib/python3.12/dist-packages (from pandas&gt;=2.0.0-&gt;geopandas) (2025.2)
+Requirement already satisfied: certifi in /usr/local/lib/python3.12/dist-packages (from pyogrio&gt;=0.7.2-&gt;geopandas) (2025.10.5)
+Requirement already satisfied: six&gt;=1.5 in /usr/local/lib/python3.12/dist-packages (from python-dateutil&gt;=2.8.2-&gt;pandas&gt;=2.0.0-&gt;geopandas) (1.17.0)
 </pre>
 </div>
 </div>
@@ -7663,7 +7657,7 @@ Successfully installed geographiclib-2.1 geopy-2.4.1
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [3]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [4]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">coords</span>
@@ -7677,8 +7671,9 @@ Successfully installed geographiclib-2.1 geopy-2.4.1
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[3]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[4]:</div>
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
+<div class="colab-df-container" id="df-807a199c-07e7-4076-894e-70c73a2374a6">
 <div>
 <style scoped="">
     .dataframe tbody tr th:only-of-type {
@@ -7704,11 +7699,135 @@ Successfully installed geographiclib-2.1 geopy-2.4.1
 <tbody>
 <tr>
 <th>0</th>
-<td>POINT (-111.94414 33.41763)</td>
-<td>1037, Farmer Avenue, Tempe Junction, Tempe, Ma...</td>
+<td>POINT (-111.93316 33.42132)</td>
+<td>Arizona State University, 1151, South Forest A...</td>
 </tr>
 </tbody>
 </table>
+</div>
+<div class="colab-df-buttons">
+<div class="colab-df-container">
+<button class="colab-df-convert" onclick="convertToInteractive('df-807a199c-07e7-4076-894e-70c73a2374a6')" style="display:none;" title="Convert this dataframe to an interactive table.">
+<svg height="24px" viewbox="0 -960 960 960" xmlns="http://www.w3.org/2000/svg">
+<path d="M120-120v-720h720v720H120Zm60-500h600v-160H180v160Zm220 220h160v-160H400v160Zm0 220h160v-160H400v160ZM180-400h160v-160H180v160Zm440 0h160v-160H620v160ZM180-180h160v-160H180v160Zm440 0h160v-160H620v160Z"></path>
+</svg>
+</button>
+<style>
+    .colab-df-container {
+      display:flex;
+      gap: 12px;
+    }
+
+    .colab-df-convert {
+      background-color: #E8F0FE;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      display: none;
+      fill: #1967D2;
+      height: 32px;
+      padding: 0 0 0 0;
+      width: 32px;
+    }
+
+    .colab-df-convert:hover {
+      background-color: #E2EBFA;
+      box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);
+      fill: #174EA6;
+    }
+
+    .colab-df-buttons div {
+      margin-bottom: 4px;
+    }
+
+    [theme=dark] .colab-df-convert {
+      background-color: #3B4455;
+      fill: #D2E3FC;
+    }
+
+    [theme=dark] .colab-df-convert:hover {
+      background-color: #434B5C;
+      box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
+      filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));
+      fill: #FFFFFF;
+    }
+  </style>
+<script>
+      const buttonEl =
+        document.querySelector('#df-807a199c-07e7-4076-894e-70c73a2374a6 button.colab-df-convert');
+      buttonEl.style.display =
+        google.colab.kernel.accessAllowed ? 'block' : 'none';
+
+      async function convertToInteractive(key) {
+        const element = document.querySelector('#df-807a199c-07e7-4076-894e-70c73a2374a6');
+        const dataTable =
+          await google.colab.kernel.invokeFunction('convertToInteractive',
+                                                    [key], {});
+        if (!dataTable) return;
+
+        const docLinkHtml = 'Like what you see? Visit the ' +
+          '<a target="_blank" href=https://colab.research.google.com/notebooks/data_table.ipynb>data table notebook</a>'
+          + ' to learn more about interactive tables.';
+        element.innerHTML = '';
+        dataTable['output_type'] = 'display_data';
+        await google.colab.output.renderOutput(dataTable, element);
+        const docLink = document.createElement('div');
+        docLink.innerHTML = docLinkHtml;
+        element.appendChild(docLink);
+      }
+    </script>
+</div>
+<div id="id_7a58b71c-4d76-4098-83af-a7a0cc15d7de">
+<style>
+      .colab-df-generate {
+        background-color: #E8F0FE;
+        border: none;
+        border-radius: 50%;
+        cursor: pointer;
+        display: none;
+        fill: #1967D2;
+        height: 32px;
+        padding: 0 0 0 0;
+        width: 32px;
+      }
+
+      .colab-df-generate:hover {
+        background-color: #E2EBFA;
+        box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);
+        fill: #174EA6;
+      }
+
+      [theme=dark] .colab-df-generate {
+        background-color: #3B4455;
+        fill: #D2E3FC;
+      }
+
+      [theme=dark] .colab-df-generate:hover {
+        background-color: #434B5C;
+        box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
+        filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));
+        fill: #FFFFFF;
+      }
+    </style>
+<button class="colab-df-generate" onclick="generateWithVariable('coords')" style="display:none;" title="Generate code using this dataframe.">
+<svg height="24px" viewbox="0 0 24 24" width="24px" xmlns="http://www.w3.org/2000/svg">
+<path d="M7,19H8.4L18.45,9,17,7.55,7,17.6ZM5,21V16.75L18.45,3.32a2,2,0,0,1,2.83,0l1.4,1.43a1.91,1.91,0,0,1,.58,1.4,1.91,1.91,0,0,1-.58,1.4L9.25,21ZM18.45,9,17,7.55Zm-12,3A5.31,5.31,0,0,0,4.9,8.1,5.31,5.31,0,0,0,1,6.5,5.31,5.31,0,0,0,4.9,4.9,5.31,5.31,0,0,0,6.5,1,5.31,5.31,0,0,0,8.1,4.9,5.31,5.31,0,0,0,12,6.5,5.46,5.46,0,0,0,6.5,12Z"></path>
+</svg>
+</button>
+<script>
+      (() => {
+      const buttonEl =
+        document.querySelector('#id_7a58b71c-4d76-4098-83af-a7a0cc15d7de button.colab-df-generate');
+      buttonEl.style.display =
+        google.colab.kernel.accessAllowed ? 'block' : 'none';
+
+      buttonEl.onclick = () => {
+        google.colab.notebook.generateWithVariable('coords');
+      }
+      })();
+    </script>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -7724,7 +7843,7 @@ Successfully installed geographiclib-2.1 geopy-2.4.1
 <p><br/>
 What we get is a GeoDataFrame with only one row that contains my address and the coordinates, which seems to be quite accurate. (you can validate it on Google Maps)</p>
 <p><br/>
-<code>POINT (-111.944135926829 33.4176156097561)</code></p>
+<code>POINT (-111.93316 33.42132)</code></p>
 </div>
 </div>
 </div>
@@ -7747,13 +7866,13 @@ For example, if we have two locations: My home and Desert Financial Arena.</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [4]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [6]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">my_address_list</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"1037 South Farmer Ave, Tempe, Arizona"</span><span class="p">,</span>
                    <span class="s2">"Desert Financial Arena, Tempe, Arizona"</span><span class="p">]</span>
 
-<span class="n">coords_list</span> <span class="o">=</span> <span class="n">geocode</span><span class="p">(</span><span class="n">my_address_list</span><span class="p">,</span> <span class="n">provider</span><span class="o">=</span><span class="s1">'nominatim'</span><span class="p">,</span> <span class="n">user_agent</span><span class="o">=</span><span class="s1">'autogis_xx'</span><span class="p">)</span>
+<span class="n">coords_list</span> <span class="o">=</span> <span class="n">geocode</span><span class="p">(</span><span class="n">my_address_list</span><span class="p">,</span> <span class="n">provider</span><span class="o">=</span><span class="s1">'photon'</span><span class="p">,</span><span class="n">timeout</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -7764,7 +7883,7 @@ For example, if we have two locations: My home and Desert Financial Arena.</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [5]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [7]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">coords_list</span>
@@ -7778,8 +7897,9 @@ For example, if we have two locations: My home and Desert Financial Arena.</p>
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[5]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[7]:</div>
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
+<div class="colab-df-container" id="df-3545df68-911d-4d66-ad13-891eee903324">
 <div>
 <style scoped="">
     .dataframe tbody tr th:only-of-type {
@@ -7805,16 +7925,260 @@ For example, if we have two locations: My home and Desert Financial Arena.</p>
 <tbody>
 <tr>
 <th>0</th>
-<td>POINT (-111.94414 33.41763)</td>
-<td>1037, Farmer Avenue, Tempe Junction, Tempe, Ma...</td>
+<td>POINT (-111.93316 33.42132)</td>
+<td>Arizona State University, 1151, South Forest A...</td>
 </tr>
 <tr>
 <th>1</th>
 <td>POINT (-111.93101 33.42451)</td>
-<td>Desert Financial Arena, 600, Veterans Way, Tem...</td>
+<td>Desert Financial Arena, 600, East Veterans Way...</td>
 </tr>
 </tbody>
 </table>
+</div>
+<div class="colab-df-buttons">
+<div class="colab-df-container">
+<button class="colab-df-convert" onclick="convertToInteractive('df-3545df68-911d-4d66-ad13-891eee903324')" style="display:none;" title="Convert this dataframe to an interactive table.">
+<svg height="24px" viewbox="0 -960 960 960" xmlns="http://www.w3.org/2000/svg">
+<path d="M120-120v-720h720v720H120Zm60-500h600v-160H180v160Zm220 220h160v-160H400v160Zm0 220h160v-160H400v160ZM180-400h160v-160H180v160Zm440 0h160v-160H620v160ZM180-180h160v-160H180v160Zm440 0h160v-160H620v160Z"></path>
+</svg>
+</button>
+<style>
+    .colab-df-container {
+      display:flex;
+      gap: 12px;
+    }
+
+    .colab-df-convert {
+      background-color: #E8F0FE;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      display: none;
+      fill: #1967D2;
+      height: 32px;
+      padding: 0 0 0 0;
+      width: 32px;
+    }
+
+    .colab-df-convert:hover {
+      background-color: #E2EBFA;
+      box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);
+      fill: #174EA6;
+    }
+
+    .colab-df-buttons div {
+      margin-bottom: 4px;
+    }
+
+    [theme=dark] .colab-df-convert {
+      background-color: #3B4455;
+      fill: #D2E3FC;
+    }
+
+    [theme=dark] .colab-df-convert:hover {
+      background-color: #434B5C;
+      box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
+      filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));
+      fill: #FFFFFF;
+    }
+  </style>
+<script>
+      const buttonEl =
+        document.querySelector('#df-3545df68-911d-4d66-ad13-891eee903324 button.colab-df-convert');
+      buttonEl.style.display =
+        google.colab.kernel.accessAllowed ? 'block' : 'none';
+
+      async function convertToInteractive(key) {
+        const element = document.querySelector('#df-3545df68-911d-4d66-ad13-891eee903324');
+        const dataTable =
+          await google.colab.kernel.invokeFunction('convertToInteractive',
+                                                    [key], {});
+        if (!dataTable) return;
+
+        const docLinkHtml = 'Like what you see? Visit the ' +
+          '<a target="_blank" href=https://colab.research.google.com/notebooks/data_table.ipynb>data table notebook</a>'
+          + ' to learn more about interactive tables.';
+        element.innerHTML = '';
+        dataTable['output_type'] = 'display_data';
+        await google.colab.output.renderOutput(dataTable, element);
+        const docLink = document.createElement('div');
+        docLink.innerHTML = docLinkHtml;
+        element.appendChild(docLink);
+      }
+    </script>
+</div>
+<div id="df-aad2c3ff-edf7-468f-9639-ad2f1a546eac">
+<button class="colab-df-quickchart" onclick="quickchart('df-aad2c3ff-edf7-468f-9639-ad2f1a546eac')" style="display:none;" title="Suggest charts">
+<svg height="24px" viewbox="0 0 24 24" width="24px" xmlns="http://www.w3.org/2000/svg">
+<g>
+<path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"></path>
+</g>
+</svg>
+</button>
+<style>
+  .colab-df-quickchart {
+      --bg-color: #E8F0FE;
+      --fill-color: #1967D2;
+      --hover-bg-color: #E2EBFA;
+      --hover-fill-color: #174EA6;
+      --disabled-fill-color: #AAA;
+      --disabled-bg-color: #DDD;
+  }
+
+  [theme=dark] .colab-df-quickchart {
+      --bg-color: #3B4455;
+      --fill-color: #D2E3FC;
+      --hover-bg-color: #434B5C;
+      --hover-fill-color: #FFFFFF;
+      --disabled-bg-color: #3B4455;
+      --disabled-fill-color: #666;
+  }
+
+  .colab-df-quickchart {
+    background-color: var(--bg-color);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: none;
+    fill: var(--fill-color);
+    height: 32px;
+    padding: 0;
+    width: 32px;
+  }
+
+  .colab-df-quickchart:hover {
+    background-color: var(--hover-bg-color);
+    box-shadow: 0 1px 2px rgba(60, 64, 67, 0.3), 0 1px 3px 1px rgba(60, 64, 67, 0.15);
+    fill: var(--button-hover-fill-color);
+  }
+
+  .colab-df-quickchart-complete:disabled,
+  .colab-df-quickchart-complete:disabled:hover {
+    background-color: var(--disabled-bg-color);
+    fill: var(--disabled-fill-color);
+    box-shadow: none;
+  }
+
+  .colab-df-spinner {
+    border: 2px solid var(--fill-color);
+    border-color: transparent;
+    border-bottom-color: var(--fill-color);
+    animation:
+      spin 1s steps(1) infinite;
+  }
+
+  @keyframes spin {
+    0% {
+      border-color: transparent;
+      border-bottom-color: var(--fill-color);
+      border-left-color: var(--fill-color);
+    }
+    20% {
+      border-color: transparent;
+      border-left-color: var(--fill-color);
+      border-top-color: var(--fill-color);
+    }
+    30% {
+      border-color: transparent;
+      border-left-color: var(--fill-color);
+      border-top-color: var(--fill-color);
+      border-right-color: var(--fill-color);
+    }
+    40% {
+      border-color: transparent;
+      border-right-color: var(--fill-color);
+      border-top-color: var(--fill-color);
+    }
+    60% {
+      border-color: transparent;
+      border-right-color: var(--fill-color);
+    }
+    80% {
+      border-color: transparent;
+      border-right-color: var(--fill-color);
+      border-bottom-color: var(--fill-color);
+    }
+    90% {
+      border-color: transparent;
+      border-bottom-color: var(--fill-color);
+    }
+  }
+</style>
+<script>
+        async function quickchart(key) {
+          const quickchartButtonEl =
+            document.querySelector('#' + key + ' button');
+          quickchartButtonEl.disabled = true;  // To prevent multiple clicks.
+          quickchartButtonEl.classList.add('colab-df-spinner');
+          try {
+            const charts = await google.colab.kernel.invokeFunction(
+                'suggestCharts', [key], {});
+          } catch (error) {
+            console.error('Error during call to suggestCharts:', error);
+          }
+          quickchartButtonEl.classList.remove('colab-df-spinner');
+          quickchartButtonEl.classList.add('colab-df-quickchart-complete');
+        }
+        (() => {
+          let quickchartButtonEl =
+            document.querySelector('#df-aad2c3ff-edf7-468f-9639-ad2f1a546eac button');
+          quickchartButtonEl.style.display =
+            google.colab.kernel.accessAllowed ? 'block' : 'none';
+        })();
+      </script>
+</div>
+<div id="id_04e8df14-18aa-469f-9f80-a1d42f87b82f">
+<style>
+      .colab-df-generate {
+        background-color: #E8F0FE;
+        border: none;
+        border-radius: 50%;
+        cursor: pointer;
+        display: none;
+        fill: #1967D2;
+        height: 32px;
+        padding: 0 0 0 0;
+        width: 32px;
+      }
+
+      .colab-df-generate:hover {
+        background-color: #E2EBFA;
+        box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);
+        fill: #174EA6;
+      }
+
+      [theme=dark] .colab-df-generate {
+        background-color: #3B4455;
+        fill: #D2E3FC;
+      }
+
+      [theme=dark] .colab-df-generate:hover {
+        background-color: #434B5C;
+        box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
+        filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));
+        fill: #FFFFFF;
+      }
+    </style>
+<button class="colab-df-generate" onclick="generateWithVariable('coords_list')" style="display:none;" title="Generate code using this dataframe.">
+<svg height="24px" viewbox="0 0 24 24" width="24px" xmlns="http://www.w3.org/2000/svg">
+<path d="M7,19H8.4L18.45,9,17,7.55,7,17.6ZM5,21V16.75L18.45,3.32a2,2,0,0,1,2.83,0l1.4,1.43a1.91,1.91,0,0,1,.58,1.4,1.91,1.91,0,0,1-.58,1.4L9.25,21ZM18.45,9,17,7.55Zm-12,3A5.31,5.31,0,0,0,4.9,8.1,5.31,5.31,0,0,0,1,6.5,5.31,5.31,0,0,0,4.9,4.9,5.31,5.31,0,0,0,6.5,1,5.31,5.31,0,0,0,8.1,4.9,5.31,5.31,0,0,0,12,6.5,5.46,5.46,0,0,0,6.5,12Z"></path>
+</svg>
+</button>
+<script>
+      (() => {
+      const buttonEl =
+        document.querySelector('#id_04e8df14-18aa-469f-9f80-a1d42f87b82f button.colab-df-generate');
+      buttonEl.style.display =
+        google.colab.kernel.accessAllowed ? 'block' : 'none';
+
+      buttonEl.onclick = () => {
+        google.colab.notebook.generateWithVariable('coords_list');
+      }
+      })();
+    </script>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -7847,13 +8211,13 @@ For example, if we have two locations: My home and Desert Financial Arena.</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [6]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [9]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">folium</span>
 <span class="o">%</span><span class="k">matplotlib</span> inline
 <span class="n">asu</span> <span class="o">=</span> <span class="n">folium</span><span class="o">.</span><span class="n">Map</span><span class="p">(</span>
-    <span class="n">location</span><span class="o">=</span><span class="p">[</span><span class="mf">33.4200</span><span class="p">,</span> <span class="o">-</span><span class="mf">111.9350</span><span class="p">],</span>
+    <span class="n">location</span><span class="o">=</span><span class="p">[</span><span class="mf">33.42132</span><span class="p">,</span> <span class="o">-</span><span class="mf">111.93316</span><span class="p">],</span>
     <span class="n">zoom_start</span><span class="o">=</span><span class="mi">15</span>
 <span class="p">)</span>
 <span class="n">folium</span><span class="o">.</span><span class="n">Marker</span><span class="p">([</span><span class="n">coords_list</span><span class="o">.</span><span class="n">geometry</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">coords_list</span><span class="o">.</span><span class="n">geometry</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">x</span><span class="p">],</span> <span class="n">popup</span><span class="o">=</span><span class="s1">'&lt;i&gt;Arena&lt;/i&gt;'</span><span class="p">)</span><span class="o">.</span><span class="n">add_to</span><span class="p">(</span><span class="n">asu</span><span class="p">)</span>
@@ -7869,7 +8233,7 @@ For example, if we have two locations: My home and Desert Financial Arena.</p>
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[6]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[9]:</div>
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
 <div style="width:100%;"><div style="position:relative;width:100%;height:0;padding-bottom:60%;"><span style="color:#565656">Make this Notebook Trusted to load map: File -&gt; Trust Notebook</span><iframe allowfullscreen="" mozallowfullscreen="" srcdoc='&lt;!DOCTYPE html&gt;
 &lt;html&gt;
@@ -7890,7 +8254,7 @@ For example, if we have two locations: My home and Desert Financial Arena.</p>
             &lt;meta name="viewport" content="width=device-width,
                 initial-scale=1.0, maximum-scale=1.0, user-scalable=no" /&gt;
             &lt;style&gt;
-                #map_8b5af8e0b25d75ebbb2d399b5170ba0d {
+                #map_6ebbcc80b38b3d6d07d8f3ba66804be4 {
                     position: relative;
                     width: 100.0%;
                     height: 100.0%;
@@ -7927,16 +8291,16 @@ For example, if we have two locations: My home and Desert Financial Arena.</p>
 &lt;body&gt;
     
     
-            &lt;div class="folium-map" id="map_8b5af8e0b25d75ebbb2d399b5170ba0d" &gt;&lt;/div&gt;
+            &lt;div class="folium-map" id="map_6ebbcc80b38b3d6d07d8f3ba66804be4" &gt;&lt;/div&gt;
         
 &lt;/body&gt;
 &lt;script&gt;
     
     
-            var map_8b5af8e0b25d75ebbb2d399b5170ba0d = L.map(
-                "map_8b5af8e0b25d75ebbb2d399b5170ba0d",
+            var map_6ebbcc80b38b3d6d07d8f3ba66804be4 = L.map(
+                "map_6ebbcc80b38b3d6d07d8f3ba66804be4",
                 {
-                    center: [33.42, -111.935],
+                    center: [33.42132, -111.93316],
                     crs: L.CRS.EPSG3857,
                     ...{
   "zoom": 15,
@@ -7951,7 +8315,7 @@ For example, if we have two locations: My home and Desert Financial Arena.</p>
 
         
     
-            var tile_layer_ac91fb4472f3cdbbe48b66f1c8fe7521 = L.tileLayer(
+            var tile_layer_cc7e9a17d337a9040bde9461b9e67487 = L.tileLayer(
                 "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
                 {
   "minZoom": 0,
@@ -7968,52 +8332,52 @@ For example, if we have two locations: My home and Desert Financial Arena.</p>
             );
         
     
-            tile_layer_ac91fb4472f3cdbbe48b66f1c8fe7521.addTo(map_8b5af8e0b25d75ebbb2d399b5170ba0d);
+            tile_layer_cc7e9a17d337a9040bde9461b9e67487.addTo(map_6ebbcc80b38b3d6d07d8f3ba66804be4);
         
     
-            var marker_1957c1839083ceac32444655465c1e97 = L.marker(
-                [33.4245079, -111.93101],
+            var marker_170482480a35c3573d4223348f196e46 = L.marker(
+                [33.42450785, -111.93100997969233],
                 {
 }
-            ).addTo(map_8b5af8e0b25d75ebbb2d399b5170ba0d);
+            ).addTo(map_6ebbcc80b38b3d6d07d8f3ba66804be4);
         
     
-        var popup_c567453fb91e99b4b0187b096483b8c6 = L.popup({
+        var popup_7f5639731a4af2c33044151b802c3dbe = L.popup({
   "maxWidth": "100%",
 });
 
         
             
-                var html_040f96b7f6657b751abefc63ce127b93 = $(`&lt;div id="html_040f96b7f6657b751abefc63ce127b93" style="width: 100.0%; height: 100.0%;"&gt;&lt;i&gt;Arena&lt;/i&gt;&lt;/div&gt;`)[0];
-                popup_c567453fb91e99b4b0187b096483b8c6.setContent(html_040f96b7f6657b751abefc63ce127b93);
+                var html_808b39e994612f71395e61f3c761ed08 = $(`&lt;div id="html_808b39e994612f71395e61f3c761ed08" style="width: 100.0%; height: 100.0%;"&gt;&lt;i&gt;Arena&lt;/i&gt;&lt;/div&gt;`)[0];
+                popup_7f5639731a4af2c33044151b802c3dbe.setContent(html_808b39e994612f71395e61f3c761ed08);
             
         
 
-        marker_1957c1839083ceac32444655465c1e97.bindPopup(popup_c567453fb91e99b4b0187b096483b8c6)
+        marker_170482480a35c3573d4223348f196e46.bindPopup(popup_7f5639731a4af2c33044151b802c3dbe)
         ;
 
         
     
     
-            var marker_da67328f6a639e8848d696333323655b = L.marker(
-                [33.4176331, -111.944136],
+            var marker_279f232fac86ca709d0463351812bb1b = L.marker(
+                [33.4213174, -111.93316305413154],
                 {
 }
-            ).addTo(map_8b5af8e0b25d75ebbb2d399b5170ba0d);
+            ).addTo(map_6ebbcc80b38b3d6d07d8f3ba66804be4);
         
     
-        var popup_62f616f4907d026513a4500da54bb07a = L.popup({
+        var popup_d6e1cb3cab299c33082eba1bc871a767 = L.popup({
   "maxWidth": "100%",
 });
 
         
             
-                var html_e3ef7acbd84cc25a197c9a9f32b589ca = $(`&lt;div id="html_e3ef7acbd84cc25a197c9a9f32b589ca" style="width: 100.0%; height: 100.0%;"&gt;&lt;i&gt;Home&lt;/i&gt;&lt;/div&gt;`)[0];
-                popup_62f616f4907d026513a4500da54bb07a.setContent(html_e3ef7acbd84cc25a197c9a9f32b589ca);
+                var html_cba7588df017ea03311322eecef7b591 = $(`&lt;div id="html_cba7588df017ea03311322eecef7b591" style="width: 100.0%; height: 100.0%;"&gt;&lt;i&gt;Home&lt;/i&gt;&lt;/div&gt;`)[0];
+                popup_d6e1cb3cab299c33082eba1bc871a767.setContent(html_cba7588df017ea03311322eecef7b591);
             
         
 
-        marker_da67328f6a639e8848d696333323655b.bindPopup(popup_62f616f4907d026513a4500da54bb07a)
+        marker_279f232fac86ca709d0463351812bb1b.bindPopup(popup_d6e1cb3cab299c33082eba1bc871a767)
         ;
 
         
