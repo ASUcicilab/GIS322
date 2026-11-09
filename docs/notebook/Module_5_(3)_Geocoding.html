@@ -7332,7 +7332,12 @@ a.anchor-link {
     if (!diagrams.length) {
       return;
     }
-    const mermaid = (await import("https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.7.0/mermaid.esm.min.mjs")).default;
+    const mermaid = (await import("https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.10.0/mermaid.esm.min.mjs")).default;
+    const elkUrl = "https://cdnjs.cloudflare.com/ajax/libs/mermaid-layout-elk/0.1.9/mermaid-layout-elk.esm.min.mjs";
+    if(elkUrl) {
+      const elkLayouts = (await import(elkUrl)).default;
+      mermaid.registerLayoutLoaders(elkLayouts);
+    }
     const parser = new DOMParser();
 
     mermaid.initialize({
@@ -7429,7 +7434,8 @@ a.anchor-link {
      * Post-process to ensure mermaid diagrams contain only valid SVG and XHTML.
      */
     function cleanMermaidSvg(svg) {
-      return svg.replace(RE_VOID_ELEMENT, replaceVoidElement);
+      svg = svg.replace(RE_VOID_ELEMENT, replaceVoidElement);
+      return `${SVG_XML_HEADER}${svg}`;
     }
 
 
@@ -7455,6 +7461,285 @@ a.anchor-link {
       }
       return `<${tag} ${rest}>`;
     }
+
+
+  /**
+   * Named HTML entities with their decimal equivalent codes.
+   *
+   * @see https://www.w3.org/TR/WD-html40-970708/sgml/entities.html
+   * */
+  const HTML_ENTITIES = `<!ENTITY Aacute "&#193;">
+<!ENTITY aacute "&#225;">
+<!ENTITY Acirc "&#194;">
+<!ENTITY acirc "&#226;">
+<!ENTITY acute "&#180;">
+<!ENTITY AElig "&#198;">
+<!ENTITY aelig "&#230;">
+<!ENTITY Agrave "&#192;">
+<!ENTITY agrave "&#224;">
+<!ENTITY alefsym "&#8501;">
+<!ENTITY Alpha "&#913;">
+<!ENTITY alpha "&#945;">
+<!ENTITY amp "&#38;">
+<!ENTITY and "&#8869;">
+<!ENTITY ang "&#8736;">
+<!ENTITY Aring "&#197;">
+<!ENTITY aring "&#229;">
+<!ENTITY asymp "&#8776;">
+<!ENTITY Atilde "&#195;">
+<!ENTITY atilde "&#227;">
+<!ENTITY Auml "&#196;">
+<!ENTITY auml "&#228;">
+<!ENTITY bdquo "&#8222;">
+<!ENTITY Beta "&#914;">
+<!ENTITY beta "&#946;">
+<!ENTITY brvbar "&#166;">
+<!ENTITY bull "&#8226;">
+<!ENTITY cap "&#8745;">
+<!ENTITY Ccedil "&#199;">
+<!ENTITY ccedil "&#231;">
+<!ENTITY cedil "&#184;">
+<!ENTITY cent "&#162;">
+<!ENTITY Chi "&#935;">
+<!ENTITY chi "&#967;">
+<!ENTITY circ "&#710;">
+<!ENTITY clubs "&#9827;">
+<!ENTITY cong "&#8773;">
+<!ENTITY copy "&#169;">
+<!ENTITY crarr "&#8629;">
+<!ENTITY cup "&#8746;">
+<!ENTITY curren "&#164;">
+<!ENTITY dagger "&#8224;">
+<!ENTITY Dagger "&#8225;">
+<!ENTITY darr "&#8595;">
+<!ENTITY dArr "&#8659;">
+<!ENTITY deg "&#176;">
+<!ENTITY Delta "&#916;">
+<!ENTITY delta "&#948;">
+<!ENTITY diams "&#9830;">
+<!ENTITY divide "&#247;">
+<!ENTITY Eacute "&#201;">
+<!ENTITY eacute "&#233;">
+<!ENTITY Ecirc "&#202;">
+<!ENTITY ecirc "&#234;">
+<!ENTITY Egrave "&#200;">
+<!ENTITY egrave "&#232;">
+<!ENTITY empty "&#8709;">
+<!ENTITY emsp "&#8195;">
+<!ENTITY ensp "&#8194;">
+<!ENTITY epsilon "&#949;">
+<!ENTITY Epsilon "&#917;">
+<!ENTITY equiv "&#8801;">
+<!ENTITY Eta "&#919;">
+<!ENTITY eta "&#951;">
+<!ENTITY ETH "&#208;">
+<!ENTITY eth "&#240;">
+<!ENTITY Euml "&#203;">
+<!ENTITY euml "&#235;">
+<!ENTITY exist "&#8707;">
+<!ENTITY fnof "&#402;">
+<!ENTITY forall "&#8704;">
+<!ENTITY frac12 "&#189;">
+<!ENTITY frac14 "&#188;">
+<!ENTITY frac34 "&#190;">
+<!ENTITY frasl "&#8260;">
+<!ENTITY Gamma "&#915;">
+<!ENTITY gamma "&#947;">
+<!ENTITY ge "&#8805;">
+<!ENTITY gt "&#62;">
+<!ENTITY harr "&#8596;">
+<!ENTITY hArr "&#8660;">
+<!ENTITY hearts "&#9829;">
+<!ENTITY hellip "&#8230;">
+<!ENTITY Iacute "&#205;">
+<!ENTITY iacute "&#237;">
+<!ENTITY Icirc "&#206;">
+<!ENTITY icirc "&#238;">
+<!ENTITY iexcl "&#161;">
+<!ENTITY Igrave "&#204;">
+<!ENTITY igrave "&#236;">
+<!ENTITY image "&#8465;">
+<!ENTITY infin "&#8734;">
+<!ENTITY int "&#8747;">
+<!ENTITY Iota "&#921;">
+<!ENTITY iota "&#953;">
+<!ENTITY iquest "&#191;">
+<!ENTITY isin "&#8712;">
+<!ENTITY Iuml "&#207;">
+<!ENTITY iuml "&#239;">
+<!ENTITY Kappa "&#922;">
+<!ENTITY kappa "&#954;">
+<!ENTITY Lambda "&#923;">
+<!ENTITY lambda "&#955;">
+<!ENTITY lang "&#9001;">
+<!ENTITY laquo "&#171;">
+<!ENTITY larr "&#8592;">
+<!ENTITY lArr "&#8656;">
+<!ENTITY lceil "&#8968;">
+<!ENTITY ldquo "&#8220;">
+<!ENTITY le "&#8804;">
+<!ENTITY lfloor "&#8970;">
+<!ENTITY lowast "&#8727;">
+<!ENTITY loz "&#9674;">
+<!ENTITY lrm "&#8206;">
+<!ENTITY lsaquo "&#8249;">
+<!ENTITY lsquo "&#8216;">
+<!ENTITY lt "&#60;">
+<!ENTITY macr "&#175;">
+<!ENTITY mdash "&#8212;">
+<!ENTITY micro "&#181;">
+<!ENTITY middot "&#183;">
+<!ENTITY minus "&#8722;">
+<!ENTITY Mu "&#924;">
+<!ENTITY mu "&#956;">
+<!ENTITY nabla "&#8711;">
+<!ENTITY nbsp "&#160;">
+<!ENTITY ndash "&#8211;">
+<!ENTITY ne "&#8800;">
+<!ENTITY ni "&#8715;">
+<!ENTITY not "&#172;">
+<!ENTITY notin "&#8713;">
+<!ENTITY nsub "&#8836;">
+<!ENTITY Ntilde "&#209;">
+<!ENTITY ntilde "&#241;">
+<!ENTITY Nu "&#925;">
+<!ENTITY nu "&#957;">
+<!ENTITY Oacute "&#211;">
+<!ENTITY oacute "&#243;">
+<!ENTITY Ocirc "&#212;">
+<!ENTITY ocirc "&#244;">
+<!ENTITY OElig "&#338;">
+<!ENTITY oelig "&#339;">
+<!ENTITY Ograve "&#210;">
+<!ENTITY ograve "&#242;">
+<!ENTITY oline "&#8254;">
+<!ENTITY Omega "&#937;">
+<!ENTITY omega "&#969;">
+<!ENTITY Omicron "&#927;">
+<!ENTITY omicron "&#959;">
+<!ENTITY oplus "&#8853;">
+<!ENTITY or "&#8870;">
+<!ENTITY ordf "&#170;">
+<!ENTITY ordm "&#186;">
+<!ENTITY Oslash "&#216;">
+<!ENTITY oslash "&#248;">
+<!ENTITY Otilde "&#213;">
+<!ENTITY otilde "&#245;">
+<!ENTITY otimes "&#8855;">
+<!ENTITY Ouml "&#214;">
+<!ENTITY ouml "&#246;">
+<!ENTITY para "&#182;">
+<!ENTITY part "&#8706;">
+<!ENTITY permil "&#8240;">
+<!ENTITY perp "&#8869;">
+<!ENTITY Phi "&#934;">
+<!ENTITY phi "&#966;">
+<!ENTITY Pi "&#928;">
+<!ENTITY pi "&#960;">
+<!ENTITY piv "&#982;">
+<!ENTITY plusmn "&#177;">
+<!ENTITY pound "&#163;">
+<!ENTITY prime "&#8242;">
+<!ENTITY Prime "&#8243;">
+<!ENTITY prod "&#8719;">
+<!ENTITY prop "&#8733;">
+<!ENTITY Psi "&#936;">
+<!ENTITY psi "&#968;">
+<!ENTITY quot "&#34;">
+<!ENTITY radic "&#8730;">
+<!ENTITY rang "&#9002;">
+<!ENTITY raquo "&#187;">
+<!ENTITY rarr "&#8594;">
+<!ENTITY rArr "&#8658;">
+<!ENTITY rceil "&#8969;">
+<!ENTITY rdquo "&#8221;">
+<!ENTITY real "&#8476;">
+<!ENTITY reg "&#174;">
+<!ENTITY rfloor "&#8971;">
+<!ENTITY Rho "&#929;">
+<!ENTITY rho "&#961;">
+<!ENTITY rlm "&#8207;">
+<!ENTITY rsaquo "&#8250;">
+<!ENTITY rsquo "&#8217;">
+<!ENTITY sbquo "&#8218;">
+<!ENTITY Scaron "&#352;">
+<!ENTITY scaron "&#353;">
+<!ENTITY sdot "&#8901;">
+<!ENTITY sect "&#167;">
+<!ENTITY shy "&#173;">
+<!ENTITY Sigma "&#931;">
+<!ENTITY sigma "&#963;">
+<!ENTITY sigmaf "&#962;">
+<!ENTITY sim "&#8764;">
+<!ENTITY spades "&#9824;">
+<!ENTITY sub "&#8834;">
+<!ENTITY sube "&#8838;">
+<!ENTITY sum "&#8721;">
+<!ENTITY sup "&#8835;">
+<!ENTITY sup1 "&#185;">
+<!ENTITY sup2 "&#178;">
+<!ENTITY sup3 "&#179;">
+<!ENTITY supe "&#8839;">
+<!ENTITY szlig "&#223;">
+<!ENTITY Tau "&#932;">
+<!ENTITY tau "&#964;">
+<!ENTITY there4 "&#8756;">
+<!ENTITY Theta "&#920;">
+<!ENTITY theta "&#952;">
+<!ENTITY thetasym "&#977;">
+<!ENTITY thinsp "&#8201;">
+<!ENTITY THORN "&#222;">
+<!ENTITY thorn "&#254;">
+<!ENTITY tilde "&#732;">
+<!ENTITY times "&#215;">
+<!ENTITY trade "&#8482;">
+<!ENTITY Uacute "&#218;">
+<!ENTITY uacute "&#250;">
+<!ENTITY uarr "&#8593;">
+<!ENTITY uArr "&#8657;">
+<!ENTITY Ucirc "&#219;">
+<!ENTITY ucirc "&#251;">
+<!ENTITY Ugrave "&#217;">
+<!ENTITY ugrave "&#249;">
+<!ENTITY uml "&#168;">
+<!ENTITY upsih "&#978;">
+<!ENTITY Upsilon "&#933;">
+<!ENTITY upsilon "&#965;">
+<!ENTITY Uuml "&#220;">
+<!ENTITY uuml "&#252;">
+<!ENTITY weierp "&#8472;">
+<!ENTITY Xi "&#926;">
+<!ENTITY xi "&#958;">
+<!ENTITY Yacute "&#221;">
+<!ENTITY yacute "&#253;">
+<!ENTITY yen "&#165;">
+<!ENTITY Yuml "&#376;">
+<!ENTITY yuml "&#255;">
+<!ENTITY Zeta "&#918;">
+<!ENTITY zeta "&#950;">
+<!ENTITY zwj "&#8205;">
+<!ENTITY zwnj "&#8204;">`.replace(/\n/g, ' ');
+
+  /**
+   * A reasonably strict xml declaration.
+   */
+  const XML_DECL = '<?xml version="1.0" standalone="no"?>';
+
+  /**
+   * The beginning of the XML doctype declaration.
+   */
+  const DOCTYPE_START = `<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd" [`;
+
+  /**
+   * The end of the XML docype declaration.
+   */
+  const DOCTYPE_END = ']>';
+
+  /**
+   * A full header for an SVG XML document.
+   */
+  const SVG_XML_HEADER = `${XML_DECL}
+    ${DOCTYPE_START}${HTML_ENTITIES}${DOCTYPE_END}`;
 
     void Promise.all([...diagrams].map(renderOneMarmaid));
   });
@@ -7517,7 +7802,7 @@ a.anchor-link {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p><a href="https://colab.research.google.com/github/Chenyan-Lu/GIS322/blob/main/notebook/Module_5_(3)_Geocoding.ipynb" target="_parent"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg"/></a></p>
+<p><a href="https://colab.research.google.com/github/ASUcicilab/GIS322/blob/main/notebook/Module_5_(3)_Geocoding.ipynb" target="_parent"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg"/></a></p>
 </div>
 </div>
 </div>
@@ -7590,8 +7875,8 @@ Above is my apartment address, is someone living close to me?
 <br/>
 And next, let's try to convert this address to coordinates. The command is:</p>
 <p><br/>
-<code>geopandas.tools.geocode.eocode(my_address, provider='photon')</code></p>
-<p>where we use the OpenStreetMap's Photon's geocoding service.This is a open-source geocoder that can be used directly without any API key.</p>
+<code>geopandas.tools.geocode.eocode(my_address, provider='nominatim')</code></p>
+<p>where we use the OpenStreetMap's Nominatim's geocoding service.</p>
 </div>
 </div>
 </div>
@@ -7600,15 +7885,14 @@ And next, let's try to convert this address to coordinates. The command is:</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [3]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [2]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>geopandas
 <span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>geopandas<span class="w"> </span>geopy
 <span class="kn">from</span><span class="w"> </span><span class="nn">geopandas.tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">geocode</span>
-<span class="c1"># Geocode addresses with Photon backend, the 'timeout' here is used to sets the maximum number of seconds your code wait for the Photon geocoding request to respond.</span>
-<span class="c1"># If no response arrives within 10 seconds, the call times out, and you can set a longer 'timeout' at this circumstance</span>
-<span class="n">coords</span> <span class="o">=</span> <span class="n">geocode</span><span class="p">(</span><span class="n">my_address</span><span class="p">,</span> <span class="n">provider</span><span class="o">=</span><span class="s1">'photon'</span><span class="p">,</span><span class="n">timeout</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="c1"># Geocode addresses with Nominatim backend</span>
+<span class="n">coords</span> <span class="o">=</span> <span class="n">geocode</span><span class="p">(</span><span class="n">my_address</span><span class="p">,</span> <span class="n">provider</span><span class="o">=</span><span class="s1">'nominatim'</span><span class="p">,</span> <span class="n">user_agent</span><span class="o">=</span><span class="s1">'autogis_xx'</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -7621,32 +7905,32 @@ And next, let's try to convert this address to coordinates. The command is:</p>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Requirement already satisfied: geopandas in /usr/local/lib/python3.12/dist-packages (1.1.1)
-Requirement already satisfied: numpy&gt;=1.24 in /usr/local/lib/python3.12/dist-packages (from geopandas) (2.0.2)
-Requirement already satisfied: pyogrio&gt;=0.7.2 in /usr/local/lib/python3.12/dist-packages (from geopandas) (0.11.1)
-Requirement already satisfied: packaging in /usr/local/lib/python3.12/dist-packages (from geopandas) (25.0)
-Requirement already satisfied: pandas&gt;=2.0.0 in /usr/local/lib/python3.12/dist-packages (from geopandas) (2.2.2)
-Requirement already satisfied: pyproj&gt;=3.5.0 in /usr/local/lib/python3.12/dist-packages (from geopandas) (3.7.2)
-Requirement already satisfied: shapely&gt;=2.0.0 in /usr/local/lib/python3.12/dist-packages (from geopandas) (2.1.2)
-Requirement already satisfied: python-dateutil&gt;=2.8.2 in /usr/local/lib/python3.12/dist-packages (from pandas&gt;=2.0.0-&gt;geopandas) (2.9.0.post0)
-Requirement already satisfied: pytz&gt;=2020.1 in /usr/local/lib/python3.12/dist-packages (from pandas&gt;=2.0.0-&gt;geopandas) (2025.2)
-Requirement already satisfied: tzdata&gt;=2022.7 in /usr/local/lib/python3.12/dist-packages (from pandas&gt;=2.0.0-&gt;geopandas) (2025.2)
-Requirement already satisfied: certifi in /usr/local/lib/python3.12/dist-packages (from pyogrio&gt;=0.7.2-&gt;geopandas) (2025.10.5)
-Requirement already satisfied: six&gt;=1.5 in /usr/local/lib/python3.12/dist-packages (from python-dateutil&gt;=2.8.2-&gt;pandas&gt;=2.0.0-&gt;geopandas) (1.17.0)
-Requirement already satisfied: geopandas in /usr/local/lib/python3.12/dist-packages (1.1.1)
-Requirement already satisfied: geopy in /usr/local/lib/python3.12/dist-packages (2.4.1)
-Requirement already satisfied: numpy&gt;=1.24 in /usr/local/lib/python3.12/dist-packages (from geopandas) (2.0.2)
-Requirement already satisfied: pyogrio&gt;=0.7.2 in /usr/local/lib/python3.12/dist-packages (from geopandas) (0.11.1)
-Requirement already satisfied: packaging in /usr/local/lib/python3.12/dist-packages (from geopandas) (25.0)
-Requirement already satisfied: pandas&gt;=2.0.0 in /usr/local/lib/python3.12/dist-packages (from geopandas) (2.2.2)
-Requirement already satisfied: pyproj&gt;=3.5.0 in /usr/local/lib/python3.12/dist-packages (from geopandas) (3.7.2)
-Requirement already satisfied: shapely&gt;=2.0.0 in /usr/local/lib/python3.12/dist-packages (from geopandas) (2.1.2)
-Requirement already satisfied: geographiclib&lt;3,&gt;=1.52 in /usr/local/lib/python3.12/dist-packages (from geopy) (2.1)
-Requirement already satisfied: python-dateutil&gt;=2.8.2 in /usr/local/lib/python3.12/dist-packages (from pandas&gt;=2.0.0-&gt;geopandas) (2.9.0.post0)
-Requirement already satisfied: pytz&gt;=2020.1 in /usr/local/lib/python3.12/dist-packages (from pandas&gt;=2.0.0-&gt;geopandas) (2025.2)
-Requirement already satisfied: tzdata&gt;=2022.7 in /usr/local/lib/python3.12/dist-packages (from pandas&gt;=2.0.0-&gt;geopandas) (2025.2)
-Requirement already satisfied: certifi in /usr/local/lib/python3.12/dist-packages (from pyogrio&gt;=0.7.2-&gt;geopandas) (2025.10.5)
-Requirement already satisfied: six&gt;=1.5 in /usr/local/lib/python3.12/dist-packages (from python-dateutil&gt;=2.8.2-&gt;pandas&gt;=2.0.0-&gt;geopandas) (1.17.0)
+<pre>Requirement already satisfied: geopandas in /Users/xiaochen/Documents/project/work/TA/GIS322/Github_Code/ASU-GIS322-cicilab/class/lib/python3.10/site-packages (1.1.1)
+Requirement already satisfied: numpy&gt;=1.24 in /Users/xiaochen/Documents/project/work/TA/GIS322/Github_Code/ASU-GIS322-cicilab/class/lib/python3.10/site-packages (from geopandas) (2.2.6)
+Requirement already satisfied: pyogrio&gt;=0.7.2 in /Users/xiaochen/Documents/project/work/TA/GIS322/Github_Code/ASU-GIS322-cicilab/class/lib/python3.10/site-packages (from geopandas) (0.11.1)
+Requirement already satisfied: packaging in /Users/xiaochen/Documents/project/work/TA/GIS322/Github_Code/ASU-GIS322-cicilab/class/lib/python3.10/site-packages (from geopandas) (25.0)
+Requirement already satisfied: pandas&gt;=2.0.0 in /Users/xiaochen/Documents/project/work/TA/GIS322/Github_Code/ASU-GIS322-cicilab/class/lib/python3.10/site-packages (from geopandas) (2.3.3)
+Requirement already satisfied: pyproj&gt;=3.5.0 in /Users/xiaochen/Documents/project/work/TA/GIS322/Github_Code/ASU-GIS322-cicilab/class/lib/python3.10/site-packages (from geopandas) (3.7.1)
+Requirement already satisfied: shapely&gt;=2.0.0 in /Users/xiaochen/Documents/project/work/TA/GIS322/Github_Code/ASU-GIS322-cicilab/class/lib/python3.10/site-packages (from geopandas) (2.1.2)
+Requirement already satisfied: python-dateutil&gt;=2.8.2 in /Users/xiaochen/Documents/project/work/TA/GIS322/Github_Code/ASU-GIS322-cicilab/class/lib/python3.10/site-packages (from pandas&gt;=2.0.0-&gt;geopandas) (2.9.0.post0)
+Requirement already satisfied: pytz&gt;=2020.1 in /Users/xiaochen/Documents/project/work/TA/GIS322/Github_Code/ASU-GIS322-cicilab/class/lib/python3.10/site-packages (from pandas&gt;=2.0.0-&gt;geopandas) (2025.2)
+Requirement already satisfied: tzdata&gt;=2022.7 in /Users/xiaochen/Documents/project/work/TA/GIS322/Github_Code/ASU-GIS322-cicilab/class/lib/python3.10/site-packages (from pandas&gt;=2.0.0-&gt;geopandas) (2025.2)
+Requirement already satisfied: certifi in /Users/xiaochen/Documents/project/work/TA/GIS322/Github_Code/ASU-GIS322-cicilab/class/lib/python3.10/site-packages (from pyogrio&gt;=0.7.2-&gt;geopandas) (2025.10.5)
+Requirement already satisfied: six&gt;=1.5 in /Users/xiaochen/Documents/project/work/TA/GIS322/Github_Code/ASU-GIS322-cicilab/class/lib/python3.10/site-packages (from python-dateutil&gt;=2.8.2-&gt;pandas&gt;=2.0.0-&gt;geopandas) (1.17.0)
+Requirement already satisfied: geopandas in /Users/xiaochen/Documents/project/work/TA/GIS322/Github_Code/ASU-GIS322-cicilab/class/lib/python3.10/site-packages (1.1.1)
+Requirement already satisfied: geopy in /Users/xiaochen/Documents/project/work/TA/GIS322/Github_Code/ASU-GIS322-cicilab/class/lib/python3.10/site-packages (2.4.1)
+Requirement already satisfied: numpy&gt;=1.24 in /Users/xiaochen/Documents/project/work/TA/GIS322/Github_Code/ASU-GIS322-cicilab/class/lib/python3.10/site-packages (from geopandas) (2.2.6)
+Requirement already satisfied: pyogrio&gt;=0.7.2 in /Users/xiaochen/Documents/project/work/TA/GIS322/Github_Code/ASU-GIS322-cicilab/class/lib/python3.10/site-packages (from geopandas) (0.11.1)
+Requirement already satisfied: packaging in /Users/xiaochen/Documents/project/work/TA/GIS322/Github_Code/ASU-GIS322-cicilab/class/lib/python3.10/site-packages (from geopandas) (25.0)
+Requirement already satisfied: pandas&gt;=2.0.0 in /Users/xiaochen/Documents/project/work/TA/GIS322/Github_Code/ASU-GIS322-cicilab/class/lib/python3.10/site-packages (from geopandas) (2.3.3)
+Requirement already satisfied: pyproj&gt;=3.5.0 in /Users/xiaochen/Documents/project/work/TA/GIS322/Github_Code/ASU-GIS322-cicilab/class/lib/python3.10/site-packages (from geopandas) (3.7.1)
+Requirement already satisfied: shapely&gt;=2.0.0 in /Users/xiaochen/Documents/project/work/TA/GIS322/Github_Code/ASU-GIS322-cicilab/class/lib/python3.10/site-packages (from geopandas) (2.1.2)
+Requirement already satisfied: geographiclib&lt;3,&gt;=1.52 in /Users/xiaochen/Documents/project/work/TA/GIS322/Github_Code/ASU-GIS322-cicilab/class/lib/python3.10/site-packages (from geopy) (2.1)
+Requirement already satisfied: python-dateutil&gt;=2.8.2 in /Users/xiaochen/Documents/project/work/TA/GIS322/Github_Code/ASU-GIS322-cicilab/class/lib/python3.10/site-packages (from pandas&gt;=2.0.0-&gt;geopandas) (2.9.0.post0)
+Requirement already satisfied: pytz&gt;=2020.1 in /Users/xiaochen/Documents/project/work/TA/GIS322/Github_Code/ASU-GIS322-cicilab/class/lib/python3.10/site-packages (from pandas&gt;=2.0.0-&gt;geopandas) (2025.2)
+Requirement already satisfied: tzdata&gt;=2022.7 in /Users/xiaochen/Documents/project/work/TA/GIS322/Github_Code/ASU-GIS322-cicilab/class/lib/python3.10/site-packages (from pandas&gt;=2.0.0-&gt;geopandas) (2025.2)
+Requirement already satisfied: certifi in /Users/xiaochen/Documents/project/work/TA/GIS322/Github_Code/ASU-GIS322-cicilab/class/lib/python3.10/site-packages (from pyogrio&gt;=0.7.2-&gt;geopandas) (2025.10.5)
+Requirement already satisfied: six&gt;=1.5 in /Users/xiaochen/Documents/project/work/TA/GIS322/Github_Code/ASU-GIS322-cicilab/class/lib/python3.10/site-packages (from python-dateutil&gt;=2.8.2-&gt;pandas&gt;=2.0.0-&gt;geopandas) (1.17.0)
 </pre>
 </div>
 </div>
@@ -7657,7 +7941,7 @@ Requirement already satisfied: six&gt;=1.5 in /usr/local/lib/python3.12/dist-pac
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [4]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [3]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">coords</span>
@@ -7671,9 +7955,8 @@ Requirement already satisfied: six&gt;=1.5 in /usr/local/lib/python3.12/dist-pac
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[4]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[3]:</div>
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
-<div class="colab-df-container" id="df-807a199c-07e7-4076-894e-70c73a2374a6">
 <div>
 <style scoped="">
     .dataframe tbody tr th:only-of-type {
@@ -7699,135 +7982,11 @@ Requirement already satisfied: six&gt;=1.5 in /usr/local/lib/python3.12/dist-pac
 <tbody>
 <tr>
 <th>0</th>
-<td>POINT (-111.93316 33.42132)</td>
-<td>Arizona State University, 1151, South Forest A...</td>
+<td>POINT (-111.94392 33.41761)</td>
+<td>1037, South Farmer Avenue, Tempe Junction, Tem...</td>
 </tr>
 </tbody>
 </table>
-</div>
-<div class="colab-df-buttons">
-<div class="colab-df-container">
-<button class="colab-df-convert" onclick="convertToInteractive('df-807a199c-07e7-4076-894e-70c73a2374a6')" style="display:none;" title="Convert this dataframe to an interactive table.">
-<svg height="24px" viewbox="0 -960 960 960" xmlns="http://www.w3.org/2000/svg">
-<path d="M120-120v-720h720v720H120Zm60-500h600v-160H180v160Zm220 220h160v-160H400v160Zm0 220h160v-160H400v160ZM180-400h160v-160H180v160Zm440 0h160v-160H620v160ZM180-180h160v-160H180v160Zm440 0h160v-160H620v160Z"></path>
-</svg>
-</button>
-<style>
-    .colab-df-container {
-      display:flex;
-      gap: 12px;
-    }
-
-    .colab-df-convert {
-      background-color: #E8F0FE;
-      border: none;
-      border-radius: 50%;
-      cursor: pointer;
-      display: none;
-      fill: #1967D2;
-      height: 32px;
-      padding: 0 0 0 0;
-      width: 32px;
-    }
-
-    .colab-df-convert:hover {
-      background-color: #E2EBFA;
-      box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);
-      fill: #174EA6;
-    }
-
-    .colab-df-buttons div {
-      margin-bottom: 4px;
-    }
-
-    [theme=dark] .colab-df-convert {
-      background-color: #3B4455;
-      fill: #D2E3FC;
-    }
-
-    [theme=dark] .colab-df-convert:hover {
-      background-color: #434B5C;
-      box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
-      filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));
-      fill: #FFFFFF;
-    }
-  </style>
-<script>
-      const buttonEl =
-        document.querySelector('#df-807a199c-07e7-4076-894e-70c73a2374a6 button.colab-df-convert');
-      buttonEl.style.display =
-        google.colab.kernel.accessAllowed ? 'block' : 'none';
-
-      async function convertToInteractive(key) {
-        const element = document.querySelector('#df-807a199c-07e7-4076-894e-70c73a2374a6');
-        const dataTable =
-          await google.colab.kernel.invokeFunction('convertToInteractive',
-                                                    [key], {});
-        if (!dataTable) return;
-
-        const docLinkHtml = 'Like what you see? Visit the ' +
-          '<a target="_blank" href=https://colab.research.google.com/notebooks/data_table.ipynb>data table notebook</a>'
-          + ' to learn more about interactive tables.';
-        element.innerHTML = '';
-        dataTable['output_type'] = 'display_data';
-        await google.colab.output.renderOutput(dataTable, element);
-        const docLink = document.createElement('div');
-        docLink.innerHTML = docLinkHtml;
-        element.appendChild(docLink);
-      }
-    </script>
-</div>
-<div id="id_7a58b71c-4d76-4098-83af-a7a0cc15d7de">
-<style>
-      .colab-df-generate {
-        background-color: #E8F0FE;
-        border: none;
-        border-radius: 50%;
-        cursor: pointer;
-        display: none;
-        fill: #1967D2;
-        height: 32px;
-        padding: 0 0 0 0;
-        width: 32px;
-      }
-
-      .colab-df-generate:hover {
-        background-color: #E2EBFA;
-        box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);
-        fill: #174EA6;
-      }
-
-      [theme=dark] .colab-df-generate {
-        background-color: #3B4455;
-        fill: #D2E3FC;
-      }
-
-      [theme=dark] .colab-df-generate:hover {
-        background-color: #434B5C;
-        box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
-        filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));
-        fill: #FFFFFF;
-      }
-    </style>
-<button class="colab-df-generate" onclick="generateWithVariable('coords')" style="display:none;" title="Generate code using this dataframe.">
-<svg height="24px" viewbox="0 0 24 24" width="24px" xmlns="http://www.w3.org/2000/svg">
-<path d="M7,19H8.4L18.45,9,17,7.55,7,17.6ZM5,21V16.75L18.45,3.32a2,2,0,0,1,2.83,0l1.4,1.43a1.91,1.91,0,0,1,.58,1.4,1.91,1.91,0,0,1-.58,1.4L9.25,21ZM18.45,9,17,7.55Zm-12,3A5.31,5.31,0,0,0,4.9,8.1,5.31,5.31,0,0,0,1,6.5,5.31,5.31,0,0,0,4.9,4.9,5.31,5.31,0,0,0,6.5,1,5.31,5.31,0,0,0,8.1,4.9,5.31,5.31,0,0,0,12,6.5,5.46,5.46,0,0,0,6.5,12Z"></path>
-</svg>
-</button>
-<script>
-      (() => {
-      const buttonEl =
-        document.querySelector('#id_7a58b71c-4d76-4098-83af-a7a0cc15d7de button.colab-df-generate');
-      buttonEl.style.display =
-        google.colab.kernel.accessAllowed ? 'block' : 'none';
-
-      buttonEl.onclick = () => {
-        google.colab.notebook.generateWithVariable('coords');
-      }
-      })();
-    </script>
-</div>
-</div>
 </div>
 </div>
 </div>
@@ -7843,7 +8002,7 @@ Requirement already satisfied: six&gt;=1.5 in /usr/local/lib/python3.12/dist-pac
 <p><br/>
 What we get is a GeoDataFrame with only one row that contains my address and the coordinates, which seems to be quite accurate. (you can validate it on Google Maps)</p>
 <p><br/>
-<code>POINT (-111.93316 33.42132)</code></p>
+<code>POINT (-111.944135926829 33.4176156097561)</code></p>
 </div>
 </div>
 </div>
@@ -7866,13 +8025,13 @@ For example, if we have two locations: My home and Desert Financial Arena.</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [6]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [4]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">my_address_list</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"1037 South Farmer Ave, Tempe, Arizona"</span><span class="p">,</span>
                    <span class="s2">"Desert Financial Arena, Tempe, Arizona"</span><span class="p">]</span>
 
-<span class="n">coords_list</span> <span class="o">=</span> <span class="n">geocode</span><span class="p">(</span><span class="n">my_address_list</span><span class="p">,</span> <span class="n">provider</span><span class="o">=</span><span class="s1">'photon'</span><span class="p">,</span><span class="n">timeout</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">coords_list</span> <span class="o">=</span> <span class="n">geocode</span><span class="p">(</span><span class="n">my_address_list</span><span class="p">,</span> <span class="n">provider</span><span class="o">=</span><span class="s1">'nominatim'</span><span class="p">,</span> <span class="n">user_agent</span><span class="o">=</span><span class="s1">'autogis_xx'</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -7883,7 +8042,7 @@ For example, if we have two locations: My home and Desert Financial Arena.</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [7]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [5]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">coords_list</span>
@@ -7897,9 +8056,8 @@ For example, if we have two locations: My home and Desert Financial Arena.</p>
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[7]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[5]:</div>
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
-<div class="colab-df-container" id="df-3545df68-911d-4d66-ad13-891eee903324">
 <div>
 <style scoped="">
     .dataframe tbody tr th:only-of-type {
@@ -7925,8 +8083,8 @@ For example, if we have two locations: My home and Desert Financial Arena.</p>
 <tbody>
 <tr>
 <th>0</th>
-<td>POINT (-111.93316 33.42132)</td>
-<td>Arizona State University, 1151, South Forest A...</td>
+<td>POINT (-111.94392 33.41761)</td>
+<td>1037, South Farmer Avenue, Tempe Junction, Tem...</td>
 </tr>
 <tr>
 <th>1</th>
@@ -7935,250 +8093,6 @@ For example, if we have two locations: My home and Desert Financial Arena.</p>
 </tr>
 </tbody>
 </table>
-</div>
-<div class="colab-df-buttons">
-<div class="colab-df-container">
-<button class="colab-df-convert" onclick="convertToInteractive('df-3545df68-911d-4d66-ad13-891eee903324')" style="display:none;" title="Convert this dataframe to an interactive table.">
-<svg height="24px" viewbox="0 -960 960 960" xmlns="http://www.w3.org/2000/svg">
-<path d="M120-120v-720h720v720H120Zm60-500h600v-160H180v160Zm220 220h160v-160H400v160Zm0 220h160v-160H400v160ZM180-400h160v-160H180v160Zm440 0h160v-160H620v160ZM180-180h160v-160H180v160Zm440 0h160v-160H620v160Z"></path>
-</svg>
-</button>
-<style>
-    .colab-df-container {
-      display:flex;
-      gap: 12px;
-    }
-
-    .colab-df-convert {
-      background-color: #E8F0FE;
-      border: none;
-      border-radius: 50%;
-      cursor: pointer;
-      display: none;
-      fill: #1967D2;
-      height: 32px;
-      padding: 0 0 0 0;
-      width: 32px;
-    }
-
-    .colab-df-convert:hover {
-      background-color: #E2EBFA;
-      box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);
-      fill: #174EA6;
-    }
-
-    .colab-df-buttons div {
-      margin-bottom: 4px;
-    }
-
-    [theme=dark] .colab-df-convert {
-      background-color: #3B4455;
-      fill: #D2E3FC;
-    }
-
-    [theme=dark] .colab-df-convert:hover {
-      background-color: #434B5C;
-      box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
-      filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));
-      fill: #FFFFFF;
-    }
-  </style>
-<script>
-      const buttonEl =
-        document.querySelector('#df-3545df68-911d-4d66-ad13-891eee903324 button.colab-df-convert');
-      buttonEl.style.display =
-        google.colab.kernel.accessAllowed ? 'block' : 'none';
-
-      async function convertToInteractive(key) {
-        const element = document.querySelector('#df-3545df68-911d-4d66-ad13-891eee903324');
-        const dataTable =
-          await google.colab.kernel.invokeFunction('convertToInteractive',
-                                                    [key], {});
-        if (!dataTable) return;
-
-        const docLinkHtml = 'Like what you see? Visit the ' +
-          '<a target="_blank" href=https://colab.research.google.com/notebooks/data_table.ipynb>data table notebook</a>'
-          + ' to learn more about interactive tables.';
-        element.innerHTML = '';
-        dataTable['output_type'] = 'display_data';
-        await google.colab.output.renderOutput(dataTable, element);
-        const docLink = document.createElement('div');
-        docLink.innerHTML = docLinkHtml;
-        element.appendChild(docLink);
-      }
-    </script>
-</div>
-<div id="df-aad2c3ff-edf7-468f-9639-ad2f1a546eac">
-<button class="colab-df-quickchart" onclick="quickchart('df-aad2c3ff-edf7-468f-9639-ad2f1a546eac')" style="display:none;" title="Suggest charts">
-<svg height="24px" viewbox="0 0 24 24" width="24px" xmlns="http://www.w3.org/2000/svg">
-<g>
-<path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"></path>
-</g>
-</svg>
-</button>
-<style>
-  .colab-df-quickchart {
-      --bg-color: #E8F0FE;
-      --fill-color: #1967D2;
-      --hover-bg-color: #E2EBFA;
-      --hover-fill-color: #174EA6;
-      --disabled-fill-color: #AAA;
-      --disabled-bg-color: #DDD;
-  }
-
-  [theme=dark] .colab-df-quickchart {
-      --bg-color: #3B4455;
-      --fill-color: #D2E3FC;
-      --hover-bg-color: #434B5C;
-      --hover-fill-color: #FFFFFF;
-      --disabled-bg-color: #3B4455;
-      --disabled-fill-color: #666;
-  }
-
-  .colab-df-quickchart {
-    background-color: var(--bg-color);
-    border: none;
-    border-radius: 50%;
-    cursor: pointer;
-    display: none;
-    fill: var(--fill-color);
-    height: 32px;
-    padding: 0;
-    width: 32px;
-  }
-
-  .colab-df-quickchart:hover {
-    background-color: var(--hover-bg-color);
-    box-shadow: 0 1px 2px rgba(60, 64, 67, 0.3), 0 1px 3px 1px rgba(60, 64, 67, 0.15);
-    fill: var(--button-hover-fill-color);
-  }
-
-  .colab-df-quickchart-complete:disabled,
-  .colab-df-quickchart-complete:disabled:hover {
-    background-color: var(--disabled-bg-color);
-    fill: var(--disabled-fill-color);
-    box-shadow: none;
-  }
-
-  .colab-df-spinner {
-    border: 2px solid var(--fill-color);
-    border-color: transparent;
-    border-bottom-color: var(--fill-color);
-    animation:
-      spin 1s steps(1) infinite;
-  }
-
-  @keyframes spin {
-    0% {
-      border-color: transparent;
-      border-bottom-color: var(--fill-color);
-      border-left-color: var(--fill-color);
-    }
-    20% {
-      border-color: transparent;
-      border-left-color: var(--fill-color);
-      border-top-color: var(--fill-color);
-    }
-    30% {
-      border-color: transparent;
-      border-left-color: var(--fill-color);
-      border-top-color: var(--fill-color);
-      border-right-color: var(--fill-color);
-    }
-    40% {
-      border-color: transparent;
-      border-right-color: var(--fill-color);
-      border-top-color: var(--fill-color);
-    }
-    60% {
-      border-color: transparent;
-      border-right-color: var(--fill-color);
-    }
-    80% {
-      border-color: transparent;
-      border-right-color: var(--fill-color);
-      border-bottom-color: var(--fill-color);
-    }
-    90% {
-      border-color: transparent;
-      border-bottom-color: var(--fill-color);
-    }
-  }
-</style>
-<script>
-        async function quickchart(key) {
-          const quickchartButtonEl =
-            document.querySelector('#' + key + ' button');
-          quickchartButtonEl.disabled = true;  // To prevent multiple clicks.
-          quickchartButtonEl.classList.add('colab-df-spinner');
-          try {
-            const charts = await google.colab.kernel.invokeFunction(
-                'suggestCharts', [key], {});
-          } catch (error) {
-            console.error('Error during call to suggestCharts:', error);
-          }
-          quickchartButtonEl.classList.remove('colab-df-spinner');
-          quickchartButtonEl.classList.add('colab-df-quickchart-complete');
-        }
-        (() => {
-          let quickchartButtonEl =
-            document.querySelector('#df-aad2c3ff-edf7-468f-9639-ad2f1a546eac button');
-          quickchartButtonEl.style.display =
-            google.colab.kernel.accessAllowed ? 'block' : 'none';
-        })();
-      </script>
-</div>
-<div id="id_04e8df14-18aa-469f-9f80-a1d42f87b82f">
-<style>
-      .colab-df-generate {
-        background-color: #E8F0FE;
-        border: none;
-        border-radius: 50%;
-        cursor: pointer;
-        display: none;
-        fill: #1967D2;
-        height: 32px;
-        padding: 0 0 0 0;
-        width: 32px;
-      }
-
-      .colab-df-generate:hover {
-        background-color: #E2EBFA;
-        box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);
-        fill: #174EA6;
-      }
-
-      [theme=dark] .colab-df-generate {
-        background-color: #3B4455;
-        fill: #D2E3FC;
-      }
-
-      [theme=dark] .colab-df-generate:hover {
-        background-color: #434B5C;
-        box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
-        filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));
-        fill: #FFFFFF;
-      }
-    </style>
-<button class="colab-df-generate" onclick="generateWithVariable('coords_list')" style="display:none;" title="Generate code using this dataframe.">
-<svg height="24px" viewbox="0 0 24 24" width="24px" xmlns="http://www.w3.org/2000/svg">
-<path d="M7,19H8.4L18.45,9,17,7.55,7,17.6ZM5,21V16.75L18.45,3.32a2,2,0,0,1,2.83,0l1.4,1.43a1.91,1.91,0,0,1,.58,1.4,1.91,1.91,0,0,1-.58,1.4L9.25,21ZM18.45,9,17,7.55Zm-12,3A5.31,5.31,0,0,0,4.9,8.1,5.31,5.31,0,0,0,1,6.5,5.31,5.31,0,0,0,4.9,4.9,5.31,5.31,0,0,0,6.5,1,5.31,5.31,0,0,0,8.1,4.9,5.31,5.31,0,0,0,12,6.5,5.46,5.46,0,0,0,6.5,12Z"></path>
-</svg>
-</button>
-<script>
-      (() => {
-      const buttonEl =
-        document.querySelector('#id_04e8df14-18aa-469f-9f80-a1d42f87b82f button.colab-df-generate');
-      buttonEl.style.display =
-        google.colab.kernel.accessAllowed ? 'block' : 'none';
-
-      buttonEl.onclick = () => {
-        google.colab.notebook.generateWithVariable('coords_list');
-      }
-      })();
-    </script>
-</div>
-</div>
 </div>
 </div>
 </div>
@@ -8211,13 +8125,13 @@ For example, if we have two locations: My home and Desert Financial Arena.</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [9]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [6]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">folium</span>
 <span class="o">%</span><span class="k">matplotlib</span> inline
 <span class="n">asu</span> <span class="o">=</span> <span class="n">folium</span><span class="o">.</span><span class="n">Map</span><span class="p">(</span>
-    <span class="n">location</span><span class="o">=</span><span class="p">[</span><span class="mf">33.42132</span><span class="p">,</span> <span class="o">-</span><span class="mf">111.93316</span><span class="p">],</span>
+    <span class="n">location</span><span class="o">=</span><span class="p">[</span><span class="mf">33.4200</span><span class="p">,</span> <span class="o">-</span><span class="mf">111.9350</span><span class="p">],</span>
     <span class="n">zoom_start</span><span class="o">=</span><span class="mi">15</span>
 <span class="p">)</span>
 <span class="n">folium</span><span class="o">.</span><span class="n">Marker</span><span class="p">([</span><span class="n">coords_list</span><span class="o">.</span><span class="n">geometry</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">coords_list</span><span class="o">.</span><span class="n">geometry</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">x</span><span class="p">],</span> <span class="n">popup</span><span class="o">=</span><span class="s1">'&lt;i&gt;Arena&lt;/i&gt;'</span><span class="p">)</span><span class="o">.</span><span class="n">add_to</span><span class="p">(</span><span class="n">asu</span><span class="p">)</span>
@@ -8233,7 +8147,7 @@ For example, if we have two locations: My home and Desert Financial Arena.</p>
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[9]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[6]:</div>
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
 <div style="width:100%;"><div style="position:relative;width:100%;height:0;padding-bottom:60%;"><span style="color:#565656">Make this Notebook Trusted to load map: File -&gt; Trust Notebook</span><iframe allowfullscreen="" mozallowfullscreen="" srcdoc='&lt;!DOCTYPE html&gt;
 &lt;html&gt;
@@ -8254,7 +8168,7 @@ For example, if we have two locations: My home and Desert Financial Arena.</p>
             &lt;meta name="viewport" content="width=device-width,
                 initial-scale=1.0, maximum-scale=1.0, user-scalable=no" /&gt;
             &lt;style&gt;
-                #map_6ebbcc80b38b3d6d07d8f3ba66804be4 {
+                #map_a0f79d1e8566d5f1d548aca2b469b274 {
                     position: relative;
                     width: 100.0%;
                     height: 100.0%;
@@ -8291,16 +8205,16 @@ For example, if we have two locations: My home and Desert Financial Arena.</p>
 &lt;body&gt;
     
     
-            &lt;div class="folium-map" id="map_6ebbcc80b38b3d6d07d8f3ba66804be4" &gt;&lt;/div&gt;
+            &lt;div class="folium-map" id="map_a0f79d1e8566d5f1d548aca2b469b274" &gt;&lt;/div&gt;
         
 &lt;/body&gt;
 &lt;script&gt;
     
     
-            var map_6ebbcc80b38b3d6d07d8f3ba66804be4 = L.map(
-                "map_6ebbcc80b38b3d6d07d8f3ba66804be4",
+            var map_a0f79d1e8566d5f1d548aca2b469b274 = L.map(
+                "map_a0f79d1e8566d5f1d548aca2b469b274",
                 {
-                    center: [33.42132, -111.93316],
+                    center: [33.42, -111.935],
                     crs: L.CRS.EPSG3857,
                     ...{
   "zoom": 15,
@@ -8315,7 +8229,7 @@ For example, if we have two locations: My home and Desert Financial Arena.</p>
 
         
     
-            var tile_layer_cc7e9a17d337a9040bde9461b9e67487 = L.tileLayer(
+            var tile_layer_7740d35894cb47ab7dd613345f6be80f = L.tileLayer(
                 "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
                 {
   "minZoom": 0,
@@ -8332,52 +8246,1116 @@ For example, if we have two locations: My home and Desert Financial Arena.</p>
             );
         
     
-            tile_layer_cc7e9a17d337a9040bde9461b9e67487.addTo(map_6ebbcc80b38b3d6d07d8f3ba66804be4);
+            tile_layer_7740d35894cb47ab7dd613345f6be80f.addTo(map_a0f79d1e8566d5f1d548aca2b469b274);
         
     
-            var marker_170482480a35c3573d4223348f196e46 = L.marker(
-                [33.42450785, -111.93100997969233],
+            var marker_cb4e99d79f17686d5d2bbc1c53c82efd = L.marker(
+                [33.4245079, -111.93101],
                 {
 }
-            ).addTo(map_6ebbcc80b38b3d6d07d8f3ba66804be4);
+            ).addTo(map_a0f79d1e8566d5f1d548aca2b469b274);
         
     
-        var popup_7f5639731a4af2c33044151b802c3dbe = L.popup({
+        var popup_92d5ce64a171fc6d951d370a8f63e8ba = L.popup({
   "maxWidth": "100%",
 });
 
         
             
-                var html_808b39e994612f71395e61f3c761ed08 = $(`&lt;div id="html_808b39e994612f71395e61f3c761ed08" style="width: 100.0%; height: 100.0%;"&gt;&lt;i&gt;Arena&lt;/i&gt;&lt;/div&gt;`)[0];
-                popup_7f5639731a4af2c33044151b802c3dbe.setContent(html_808b39e994612f71395e61f3c761ed08);
+                var html_9865dd2058a53498baafe4e97e9ec7b5 = $(`&lt;div id="html_9865dd2058a53498baafe4e97e9ec7b5" style="width: 100.0%; height: 100.0%;"&gt;&lt;i&gt;Arena&lt;/i&gt;&lt;/div&gt;`)[0];
+                popup_92d5ce64a171fc6d951d370a8f63e8ba.setContent(html_9865dd2058a53498baafe4e97e9ec7b5);
             
         
 
-        marker_170482480a35c3573d4223348f196e46.bindPopup(popup_7f5639731a4af2c33044151b802c3dbe)
+        marker_cb4e99d79f17686d5d2bbc1c53c82efd.bindPopup(popup_92d5ce64a171fc6d951d370a8f63e8ba)
         ;
 
         
     
     
-            var marker_279f232fac86ca709d0463351812bb1b = L.marker(
-                [33.4213174, -111.93316305413154],
+            var marker_d76a2094489d715ff155697c3cdc8d9f = L.marker(
+                [33.4176119, -111.9439168],
                 {
 }
-            ).addTo(map_6ebbcc80b38b3d6d07d8f3ba66804be4);
+            ).addTo(map_a0f79d1e8566d5f1d548aca2b469b274);
         
     
-        var popup_d6e1cb3cab299c33082eba1bc871a767 = L.popup({
+        var popup_4ba9dbf3793f3de1e8a8d7712a628594 = L.popup({
   "maxWidth": "100%",
 });
 
         
             
-                var html_cba7588df017ea03311322eecef7b591 = $(`&lt;div id="html_cba7588df017ea03311322eecef7b591" style="width: 100.0%; height: 100.0%;"&gt;&lt;i&gt;Home&lt;/i&gt;&lt;/div&gt;`)[0];
-                popup_d6e1cb3cab299c33082eba1bc871a767.setContent(html_cba7588df017ea03311322eecef7b591);
+                var html_53a7e6473d9f3908d2a1ee6fd2682b87 = $(`&lt;div id="html_53a7e6473d9f3908d2a1ee6fd2682b87" style="width: 100.0%; height: 100.0%;"&gt;&lt;i&gt;Home&lt;/i&gt;&lt;/div&gt;`)[0];
+                popup_4ba9dbf3793f3de1e8a8d7712a628594.setContent(html_53a7e6473d9f3908d2a1ee6fd2682b87);
             
         
 
-        marker_279f232fac86ca709d0463351812bb1b.bindPopup(popup_d6e1cb3cab299c33082eba1bc871a767)
+        marker_d76a2094489d715ff155697c3cdc8d9f.bindPopup(popup_4ba9dbf3793f3de1e8a8d7712a628594)
+        ;
+
+        
+    
+&lt;/script&gt;
+&lt;/html&gt;' style="position:absolute;width:100%;height:100%;left:0;top:0;border:none !important;" webkitallowfullscreen=""></iframe></div></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p><br/></p>
+<h2 id="Geocoding-many-addresses">Geocoding many addresses<a class="anchor-link" href="#Geocoding-many-addresses">¶</a></h2><p>Two addresses work fine. But what happens when we have a whole table of addresses, like 20, or 500 Starbucks stores?</p>
+<p>Below is a table of 20 places around the Phoenix metro area.</p>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [7]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="n">address_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+    <span class="s2">"name"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"My apartment"</span><span class="p">,</span> <span class="s2">"Desert Financial Arena"</span><span class="p">,</span> <span class="s2">"Mountain America Stadium"</span><span class="p">,</span>
+             <span class="s2">"Tempe Center for the Arts"</span><span class="p">,</span> <span class="s2">"Tempe Marketplace"</span><span class="p">,</span> <span class="s2">"Arizona Mills"</span><span class="p">,</span>
+             <span class="s2">"Arizona State Capitol"</span><span class="p">,</span> <span class="s2">"Phoenix Sky Harbor Airport"</span><span class="p">,</span> <span class="s2">"Chase Field"</span><span class="p">,</span>
+             <span class="s2">"Footprint Center"</span><span class="p">,</span> <span class="s2">"Arizona Science Center"</span><span class="p">,</span> <span class="s2">"Phoenix Art Museum"</span><span class="p">,</span>
+             <span class="s2">"Heard Museum"</span><span class="p">,</span> <span class="s2">"Desert Botanical Garden"</span><span class="p">,</span> <span class="s2">"Phoenix Zoo"</span><span class="p">,</span>
+             <span class="s2">"Musical Instrument Museum"</span><span class="p">,</span> <span class="s2">"Scottsdale Fashion Square"</span><span class="p">,</span> <span class="s2">"Taliesin West"</span><span class="p">,</span>
+             <span class="s2">"Mesa Arts Center"</span><span class="p">,</span> <span class="s2">"State Farm Stadium"</span><span class="p">],</span>
+    <span class="s2">"address"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"1037 South Farmer Ave, Tempe, AZ"</span><span class="p">,</span>
+                <span class="s2">"600 E Veterans Way, Tempe, AZ 85281"</span><span class="p">,</span>
+                <span class="s2">"500 E Veterans Way, Tempe, AZ 85281"</span><span class="p">,</span>
+                <span class="s2">"700 W Rio Salado Pkwy, Tempe, AZ 85281"</span><span class="p">,</span>
+                <span class="s2">"2000 E Rio Salado Pkwy, Tempe, AZ 85281"</span><span class="p">,</span>
+                <span class="s2">"5000 S Arizona Mills Cir, Tempe, AZ 85282"</span><span class="p">,</span>
+                <span class="s2">"1700 W Washington St, Phoenix, AZ 85007"</span><span class="p">,</span>
+                <span class="s2">"3400 E Sky Harbor Blvd, Phoenix, AZ 85034"</span><span class="p">,</span>
+                <span class="s2">"401 E Jefferson St, Phoenix, AZ 85004"</span><span class="p">,</span>
+                <span class="s2">"201 E Jefferson St, Phoenix, AZ 85004"</span><span class="p">,</span>
+                <span class="s2">"600 E Washington St, Phoenix, AZ 85004"</span><span class="p">,</span>
+                <span class="s2">"1625 N Central Ave, Phoenix, AZ 85004"</span><span class="p">,</span>
+                <span class="s2">"2301 N Central Ave, Phoenix, AZ 85004"</span><span class="p">,</span>
+                <span class="s2">"1201 N Galvin Pkwy, Phoenix, AZ 85008"</span><span class="p">,</span>
+                <span class="s2">"455 N Galvin Pkwy, Phoenix, AZ 85008"</span><span class="p">,</span>
+                <span class="s2">"4725 E Mayo Blvd, Phoenix, AZ 85050"</span><span class="p">,</span>
+                <span class="s2">"7014 E Camelback Rd, Scottsdale, AZ 85251"</span><span class="p">,</span>
+                <span class="s2">"12621 N Frank Lloyd Wright Blvd, Scottsdale, AZ 85259"</span><span class="p">,</span>
+                <span class="s2">"1 E Main St, Mesa, AZ 85201"</span><span class="p">,</span>
+                <span class="s2">"1 Cardinals Dr, Glendale, AZ 85305"</span><span class="p">],</span>
+<span class="p">})</span>
+
+<span class="n">address_df</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[7]:</div>
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th></th>
+<th>name</th>
+<th>address</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>0</th>
+<td>My apartment</td>
+<td>1037 South Farmer Ave, Tempe, AZ</td>
+</tr>
+<tr>
+<th>1</th>
+<td>Desert Financial Arena</td>
+<td>600 E Veterans Way, Tempe, AZ 85281</td>
+</tr>
+<tr>
+<th>2</th>
+<td>Mountain America Stadium</td>
+<td>500 E Veterans Way, Tempe, AZ 85281</td>
+</tr>
+<tr>
+<th>3</th>
+<td>Tempe Center for the Arts</td>
+<td>700 W Rio Salado Pkwy, Tempe, AZ 85281</td>
+</tr>
+<tr>
+<th>4</th>
+<td>Tempe Marketplace</td>
+<td>2000 E Rio Salado Pkwy, Tempe, AZ 85281</td>
+</tr>
+<tr>
+<th>5</th>
+<td>Arizona Mills</td>
+<td>5000 S Arizona Mills Cir, Tempe, AZ 85282</td>
+</tr>
+<tr>
+<th>6</th>
+<td>Arizona State Capitol</td>
+<td>1700 W Washington St, Phoenix, AZ 85007</td>
+</tr>
+<tr>
+<th>7</th>
+<td>Phoenix Sky Harbor Airport</td>
+<td>3400 E Sky Harbor Blvd, Phoenix, AZ 85034</td>
+</tr>
+<tr>
+<th>8</th>
+<td>Chase Field</td>
+<td>401 E Jefferson St, Phoenix, AZ 85004</td>
+</tr>
+<tr>
+<th>9</th>
+<td>Footprint Center</td>
+<td>201 E Jefferson St, Phoenix, AZ 85004</td>
+</tr>
+<tr>
+<th>10</th>
+<td>Arizona Science Center</td>
+<td>600 E Washington St, Phoenix, AZ 85004</td>
+</tr>
+<tr>
+<th>11</th>
+<td>Phoenix Art Museum</td>
+<td>1625 N Central Ave, Phoenix, AZ 85004</td>
+</tr>
+<tr>
+<th>12</th>
+<td>Heard Museum</td>
+<td>2301 N Central Ave, Phoenix, AZ 85004</td>
+</tr>
+<tr>
+<th>13</th>
+<td>Desert Botanical Garden</td>
+<td>1201 N Galvin Pkwy, Phoenix, AZ 85008</td>
+</tr>
+<tr>
+<th>14</th>
+<td>Phoenix Zoo</td>
+<td>455 N Galvin Pkwy, Phoenix, AZ 85008</td>
+</tr>
+<tr>
+<th>15</th>
+<td>Musical Instrument Museum</td>
+<td>4725 E Mayo Blvd, Phoenix, AZ 85050</td>
+</tr>
+<tr>
+<th>16</th>
+<td>Scottsdale Fashion Square</td>
+<td>7014 E Camelback Rd, Scottsdale, AZ 85251</td>
+</tr>
+<tr>
+<th>17</th>
+<td>Taliesin West</td>
+<td>12621 N Frank Lloyd Wright Blvd, Scottsdale, A...</td>
+</tr>
+<tr>
+<th>18</th>
+<td>Mesa Arts Center</td>
+<td>1 E Main St, Mesa, AZ 85201</td>
+</tr>
+<tr>
+<th>19</th>
+<td>State Farm Stadium</td>
+<td>1 Cardinals Dr, Glendale, AZ 85305</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p><br/></p>
+<h3 id="The-problem:-sending-too-many-requests-too-fast">The problem: sending too many requests too fast<a class="anchor-link" href="#The-problem:-sending-too-many-requests-too-fast">¶</a></h3><p>Free geocoding services only allow about <strong>1 request per second</strong>. <code>geopandas.tools.geocode</code> sends the addresses one after another, and for most providers (e.g. Photon) it does <strong>not wait</strong> between them. With a long list, the server starts refusing requests and the whole cell stops with an error like:</p>
+<pre><code>AdapterHTTPError: Non-successful status code 503
+GeocoderTimedOut: Non-successful status code 503
+</code></pre>
+<p><code>503 Service Unavailable</code> means "too many requests, slow down". One refused address is enough to lose the results for <strong>all</strong> addresses.</p>
+<h3 id="The-solution:-RateLimiter">The solution: <code>RateLimiter</code><a class="anchor-link" href="#The-solution:-RateLimiter">¶</a></h3><p><code>geopy</code> has a <code>RateLimiter</code> that wraps the geocoder and:</p>
+<ul>
+<li>waits <code>min_delay_seconds</code> between requests (stay under the limit),</li>
+<li>retries a failed request up to <code>max_retries</code> times, waiting <code>error_wait_seconds</code> first (back off after a 503),</li>
+<li>with <code>swallow_exceptions=True</code>, gives <code>None</code> for an address that still fails, instead of stopping everything.</li>
+</ul>
+<p>Then we build the GeoDataFrame ourselves from the results.</p>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [8]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">geopandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">gpd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">geopy.geocoders</span><span class="w"> </span><span class="kn">import</span> <span class="n">Photon</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">geopy.extra.rate_limiter</span><span class="w"> </span><span class="kn">import</span> <span class="n">RateLimiter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">shapely.geometry</span><span class="w"> </span><span class="kn">import</span> <span class="n">Point</span>
+
+<span class="n">geolocator</span> <span class="o">=</span> <span class="n">Photon</span><span class="p">(</span><span class="n">user_agent</span><span class="o">=</span><span class="s2">"autogis_xx"</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>   <span class="c1"># make user_agent unique</span>
+<span class="n">geocode_rl</span> <span class="o">=</span> <span class="n">RateLimiter</span><span class="p">(</span><span class="n">geolocator</span><span class="o">.</span><span class="n">geocode</span><span class="p">,</span>
+                         <span class="n">min_delay_seconds</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>     <span class="c1"># slow down</span>
+                         <span class="n">max_retries</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+                         <span class="n">error_wait_seconds</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>    <span class="c1"># back off after a 503</span>
+                         <span class="n">swallow_exceptions</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="c1"># failed rows become None</span>
+
+<span class="n">locs</span> <span class="o">=</span> <span class="n">address_df</span><span class="p">[</span><span class="s2">"address"</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">geocode_rl</span><span class="p">)</span>
+
+<span class="n">address_gdf</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">(</span>
+    <span class="n">address_df</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
+    <span class="n">geometry</span><span class="o">=</span><span class="p">[</span><span class="n">Point</span><span class="p">(</span><span class="n">l</span><span class="o">.</span><span class="n">longitude</span><span class="p">,</span> <span class="n">l</span><span class="o">.</span><span class="n">latitude</span><span class="p">)</span> <span class="k">if</span> <span class="n">l</span> <span class="k">else</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">locs</span><span class="p">],</span>
+    <span class="n">crs</span><span class="o">=</span><span class="s2">"EPSG:4326"</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">address_gdf</span><span class="p">[</span><span class="s2">"geocoded_address"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">l</span><span class="o">.</span><span class="n">address</span> <span class="k">if</span> <span class="n">l</span> <span class="k">else</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">locs</span><span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">address_gdf</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">isna</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">(),</span> <span class="s2">"of"</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">address_gdf</span><span class="p">),</span> <span class="s2">"failed"</span><span class="p">)</span>
+<span class="n">address_gdf</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>0 of 20 failed
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[8]:</div>
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th></th>
+<th>name</th>
+<th>address</th>
+<th>geometry</th>
+<th>geocoded_address</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>0</th>
+<td>My apartment</td>
+<td>1037 South Farmer Ave, Tempe, AZ</td>
+<td>POINT (-111.94392 33.41761)</td>
+<td>1037, South Farmer Avenue, 85280, South Farmer...</td>
+</tr>
+<tr>
+<th>1</th>
+<td>Desert Financial Arena</td>
+<td>600 E Veterans Way, Tempe, AZ 85281</td>
+<td>POINT (-111.93101 33.42451)</td>
+<td>Desert Financial Arena, 600, East Veterans Way...</td>
+</tr>
+<tr>
+<th>2</th>
+<td>Mountain America Stadium</td>
+<td>500 E Veterans Way, Tempe, AZ 85281</td>
+<td>POINT (-111.93266 33.42631)</td>
+<td>Mountain America Stadium, 500, East Veterans W...</td>
+</tr>
+<tr>
+<th>3</th>
+<td>Tempe Center for the Arts</td>
+<td>700 W Rio Salado Pkwy, Tempe, AZ 85281</td>
+<td>POINT (-111.94921 33.43096)</td>
+<td>Rio Salado Pkwy &amp; 700 West, West Rio Salado Pa...</td>
+</tr>
+<tr>
+<th>4</th>
+<td>Tempe Marketplace</td>
+<td>2000 E Rio Salado Pkwy, Tempe, AZ 85281</td>
+<td>POINT (-111.90105 33.42944)</td>
+<td>Rio Salado Pkwy &amp; Smith Rd, 2000, East Rio Sal...</td>
+</tr>
+<tr>
+<th>5</th>
+<td>Arizona Mills</td>
+<td>5000 S Arizona Mills Cir, Tempe, AZ 85282</td>
+<td>POINT (-111.96459 33.38317)</td>
+<td>Arizona Mills, 5000, South Arizona Mills Circl...</td>
+</tr>
+<tr>
+<th>6</th>
+<td>Arizona State Capitol</td>
+<td>1700 W Washington St, Phoenix, AZ 85007</td>
+<td>POINT (-112.09662 33.44863)</td>
+<td>Arizona State House of Representatives, 1700, ...</td>
+</tr>
+<tr>
+<th>7</th>
+<td>Phoenix Sky Harbor Airport</td>
+<td>3400 E Sky Harbor Blvd, Phoenix, AZ 85034</td>
+<td>POINT (-112.00679 33.43285)</td>
+<td>Phoenix Sky Harbor International Airport, Copp...</td>
+</tr>
+<tr>
+<th>8</th>
+<td>Chase Field</td>
+<td>401 E Jefferson St, Phoenix, AZ 85004</td>
+<td>POINT (-112.06791 33.44616)</td>
+<td>401, East Jefferson Street, 85004, East Jeffer...</td>
+</tr>
+<tr>
+<th>9</th>
+<td>Footprint Center</td>
+<td>201 E Jefferson St, Phoenix, AZ 85004</td>
+<td>POINT (-112.07451 33.44711)</td>
+<td>Downtown Phoenix Hub/Jefferson Street, West Je...</td>
+</tr>
+<tr>
+<th>10</th>
+<td>Arizona Science Center</td>
+<td>600 E Washington St, Phoenix, AZ 85004</td>
+<td>POINT (-112.06664 33.44867)</td>
+<td>Arizona Science Center, 600, East Washington S...</td>
+</tr>
+<tr>
+<th>11</th>
+<td>Phoenix Art Museum</td>
+<td>1625 N Central Ave, Phoenix, AZ 85004</td>
+<td>POINT (-112.0721 33.46674)</td>
+<td>Phoenix Art Museum, 1625, North Central Avenue...</td>
+</tr>
+<tr>
+<th>12</th>
+<td>Heard Museum</td>
+<td>2301 N Central Ave, Phoenix, AZ 85004</td>
+<td>POINT (-112.0722 33.4716)</td>
+<td>Heard Museum, 2301, North Central Avenue, 8500...</td>
+</tr>
+<tr>
+<th>13</th>
+<td>Desert Botanical Garden</td>
+<td>1201 N Galvin Pkwy, Phoenix, AZ 85008</td>
+<td>POINT (-111.945 33.46206)</td>
+<td>Gertrude's by Tarbell’s, 1201, North Galvin Pa...</td>
+</tr>
+<tr>
+<th>14</th>
+<td>Phoenix Zoo</td>
+<td>455 N Galvin Pkwy, Phoenix, AZ 85008</td>
+<td>POINT (-111.94637 33.44962)</td>
+<td>Phoenix Zoo, 455, North Galvin Parkway, 85008,...</td>
+</tr>
+<tr>
+<th>15</th>
+<td>Musical Instrument Museum</td>
+<td>4725 E Mayo Blvd, Phoenix, AZ 85050</td>
+<td>POINT (-111.97834 33.66751)</td>
+<td>Musical Instrument Museum, 4725, East Mayo Bou...</td>
+</tr>
+<tr>
+<th>16</th>
+<td>Scottsdale Fashion Square</td>
+<td>7014 E Camelback Rd, Scottsdale, AZ 85251</td>
+<td>POINT (-111.92632 33.50388)</td>
+<td>Scottsdale Rd &amp; Fashion Square, 7014, East Cam...</td>
+</tr>
+<tr>
+<th>17</th>
+<td>Taliesin West</td>
+<td>12621 N Frank Lloyd Wright Blvd, Scottsdale, A...</td>
+<td>POINT (-111.92517 33.63932)</td>
+<td>Scottsdale Rd &amp; Frank Lloyd Wright Blvd, North...</td>
+</tr>
+<tr>
+<th>18</th>
+<td>Mesa Arts Center</td>
+<td>1 E Main St, Mesa, AZ 85201</td>
+<td>POINT (-111.83029 33.41416)</td>
+<td>Mesa Arts Center, 1, East Main Street, 85201, ...</td>
+</tr>
+<tr>
+<th>19</th>
+<td>State Farm Stadium</td>
+<td>1 Cardinals Dr, Glendale, AZ 85305</td>
+<td>POINT (-112.26267 33.5278)</td>
+<td>1, West Cardinals Drive, 85305, West Cardinals...</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p><br/>
+This takes about 1 second per address (20 addresses ≈ 20 seconds, 500 addresses ≈ 8–9 minutes), but it finishes without errors. Any address that failed has an empty geometry, so drop those rows before mapping:</p>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [9]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">address_gdf</span> <span class="o">=</span> <span class="n">address_gdf</span><span class="p">[</span><span class="n">address_gdf</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">notna</span><span class="p">()]</span>
+
+<span class="n">phx</span> <span class="o">=</span> <span class="n">folium</span><span class="o">.</span><span class="n">Map</span><span class="p">(</span><span class="n">location</span><span class="o">=</span><span class="p">[</span><span class="mf">33.48</span><span class="p">,</span> <span class="o">-</span><span class="mf">111.95</span><span class="p">],</span> <span class="n">zoom_start</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">address_gdf</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+    <span class="n">folium</span><span class="o">.</span><span class="n">Marker</span><span class="p">([</span><span class="n">row</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">row</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">x</span><span class="p">],</span> <span class="n">popup</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s2">"name"</span><span class="p">])</span><span class="o">.</span><span class="n">add_to</span><span class="p">(</span><span class="n">phx</span><span class="p">)</span>
+<span class="n">phx</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[9]:</div>
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
+<div style="width:100%;"><div style="position:relative;width:100%;height:0;padding-bottom:60%;"><span style="color:#565656">Make this Notebook Trusted to load map: File -&gt; Trust Notebook</span><iframe allowfullscreen="" mozallowfullscreen="" srcdoc='&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    
+    &lt;meta http-equiv="content-type" content="text/html; charset=UTF-8" /&gt;
+    &lt;script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"&gt;&lt;/script&gt;
+    &lt;script src="https://code.jquery.com/jquery-3.7.1.min.js"&gt;&lt;/script&gt;
+    &lt;script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"&gt;&lt;/script&gt;
+    &lt;script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"&gt;&lt;/script&gt;
+    &lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/&gt;
+    &lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/&gt;
+    &lt;link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css"/&gt;
+    &lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/&gt;
+    &lt;link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/&gt;
+    &lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/&gt;
+    
+            &lt;meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" /&gt;
+            &lt;style&gt;
+                #map_19c093c873d8e6928d9875c2021f2af1 {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            &lt;/style&gt;
+
+            &lt;style&gt;html, body {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            &lt;/style&gt;
+
+            &lt;style&gt;#map {
+                position:absolute;
+                top:0;
+                bottom:0;
+                right:0;
+                left:0;
+                }
+            &lt;/style&gt;
+
+            &lt;script&gt;
+                L_NO_TOUCH = false;
+                L_DISABLE_3D = false;
+            &lt;/script&gt;
+
+        
+&lt;/head&gt;
+&lt;body&gt;
+    
+    
+            &lt;div class="folium-map" id="map_19c093c873d8e6928d9875c2021f2af1" &gt;&lt;/div&gt;
+        
+&lt;/body&gt;
+&lt;script&gt;
+    
+    
+            var map_19c093c873d8e6928d9875c2021f2af1 = L.map(
+                "map_19c093c873d8e6928d9875c2021f2af1",
+                {
+                    center: [33.48, -111.95],
+                    crs: L.CRS.EPSG3857,
+                    ...{
+  "zoom": 10,
+  "zoomControl": true,
+  "preferCanvas": false,
+}
+
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_2d9bd761e95edff06fccea7d89ea022c = L.tileLayer(
+                "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                {
+  "minZoom": 0,
+  "maxZoom": 19,
+  "maxNativeZoom": 19,
+  "noWrap": false,
+  "attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors",
+  "subdomains": "abc",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            tile_layer_2d9bd761e95edff06fccea7d89ea022c.addTo(map_19c093c873d8e6928d9875c2021f2af1);
+        
+    
+            var marker_4c3e9c6b819d8c30800b80dfd8262728 = L.marker(
+                [33.4176119, -111.9439168],
+                {
+}
+            ).addTo(map_19c093c873d8e6928d9875c2021f2af1);
+        
+    
+        var popup_057377afff7cc3ceda9f7adc2f0510ed = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_07559ae820ef0957936202530ae71e80 = $(`&lt;div id="html_07559ae820ef0957936202530ae71e80" style="width: 100.0%; height: 100.0%;"&gt;My apartment&lt;/div&gt;`)[0];
+                popup_057377afff7cc3ceda9f7adc2f0510ed.setContent(html_07559ae820ef0957936202530ae71e80);
+            
+        
+
+        marker_4c3e9c6b819d8c30800b80dfd8262728.bindPopup(popup_057377afff7cc3ceda9f7adc2f0510ed)
+        ;
+
+        
+    
+    
+            var marker_3a81b1c7256bb3d891b766df898b049d = L.marker(
+                [33.4245079, -111.93101],
+                {
+}
+            ).addTo(map_19c093c873d8e6928d9875c2021f2af1);
+        
+    
+        var popup_32da76371ac0739c1b104d354f1040ab = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_a8927a89e2507ee06d18246c36fe3c44 = $(`&lt;div id="html_a8927a89e2507ee06d18246c36fe3c44" style="width: 100.0%; height: 100.0%;"&gt;Desert Financial Arena&lt;/div&gt;`)[0];
+                popup_32da76371ac0739c1b104d354f1040ab.setContent(html_a8927a89e2507ee06d18246c36fe3c44);
+            
+        
+
+        marker_3a81b1c7256bb3d891b766df898b049d.bindPopup(popup_32da76371ac0739c1b104d354f1040ab)
+        ;
+
+        
+    
+    
+            var marker_51c19bd661a7b2ced310894011a54ddd = L.marker(
+                [33.4263095, -111.932659],
+                {
+}
+            ).addTo(map_19c093c873d8e6928d9875c2021f2af1);
+        
+    
+        var popup_2086e55df039e59a417fdc128542d1c4 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_085865e9832c7ab85af2a656a16f7a2d = $(`&lt;div id="html_085865e9832c7ab85af2a656a16f7a2d" style="width: 100.0%; height: 100.0%;"&gt;Mountain America Stadium&lt;/div&gt;`)[0];
+                popup_2086e55df039e59a417fdc128542d1c4.setContent(html_085865e9832c7ab85af2a656a16f7a2d);
+            
+        
+
+        marker_51c19bd661a7b2ced310894011a54ddd.bindPopup(popup_2086e55df039e59a417fdc128542d1c4)
+        ;
+
+        
+    
+    
+            var marker_de9b38822bfdbce1e81aea9bf96f9d69 = L.marker(
+                [33.4309625, -111.9492066],
+                {
+}
+            ).addTo(map_19c093c873d8e6928d9875c2021f2af1);
+        
+    
+        var popup_7a5cb584cacbb895f2014ca369213960 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_2d29dda0fad4db60e887ee695a771783 = $(`&lt;div id="html_2d29dda0fad4db60e887ee695a771783" style="width: 100.0%; height: 100.0%;"&gt;Tempe Center for the Arts&lt;/div&gt;`)[0];
+                popup_7a5cb584cacbb895f2014ca369213960.setContent(html_2d29dda0fad4db60e887ee695a771783);
+            
+        
+
+        marker_de9b38822bfdbce1e81aea9bf96f9d69.bindPopup(popup_7a5cb584cacbb895f2014ca369213960)
+        ;
+
+        
+    
+    
+            var marker_ec569374b1a818d0d1f8230d4a84a592 = L.marker(
+                [33.4294394, -111.9010475],
+                {
+}
+            ).addTo(map_19c093c873d8e6928d9875c2021f2af1);
+        
+    
+        var popup_866b8b2279179ae5fb5c5dee522c135f = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_4b3549b46b336e3bbef03d0a202b58e2 = $(`&lt;div id="html_4b3549b46b336e3bbef03d0a202b58e2" style="width: 100.0%; height: 100.0%;"&gt;Tempe Marketplace&lt;/div&gt;`)[0];
+                popup_866b8b2279179ae5fb5c5dee522c135f.setContent(html_4b3549b46b336e3bbef03d0a202b58e2);
+            
+        
+
+        marker_ec569374b1a818d0d1f8230d4a84a592.bindPopup(popup_866b8b2279179ae5fb5c5dee522c135f)
+        ;
+
+        
+    
+    
+            var marker_4f9754d0368b1da996d8de880781b1c8 = L.marker(
+                [33.3831667, -111.9645856],
+                {
+}
+            ).addTo(map_19c093c873d8e6928d9875c2021f2af1);
+        
+    
+        var popup_0db2aff3089fd79d6f892c863dc1d2ea = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_fcba6b94ee12a2c8dcb310c20b911671 = $(`&lt;div id="html_fcba6b94ee12a2c8dcb310c20b911671" style="width: 100.0%; height: 100.0%;"&gt;Arizona Mills&lt;/div&gt;`)[0];
+                popup_0db2aff3089fd79d6f892c863dc1d2ea.setContent(html_fcba6b94ee12a2c8dcb310c20b911671);
+            
+        
+
+        marker_4f9754d0368b1da996d8de880781b1c8.bindPopup(popup_0db2aff3089fd79d6f892c863dc1d2ea)
+        ;
+
+        
+    
+    
+            var marker_843ccbdd52d6727db53ea3d8950bd965 = L.marker(
+                [33.4486295, -112.0966244],
+                {
+}
+            ).addTo(map_19c093c873d8e6928d9875c2021f2af1);
+        
+    
+        var popup_d8ac9c287e000ca2e9b06eaddb22462b = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_ad07485cff93273f0445448b255e2d8d = $(`&lt;div id="html_ad07485cff93273f0445448b255e2d8d" style="width: 100.0%; height: 100.0%;"&gt;Arizona State Capitol&lt;/div&gt;`)[0];
+                popup_d8ac9c287e000ca2e9b06eaddb22462b.setContent(html_ad07485cff93273f0445448b255e2d8d);
+            
+        
+
+        marker_843ccbdd52d6727db53ea3d8950bd965.bindPopup(popup_d8ac9c287e000ca2e9b06eaddb22462b)
+        ;
+
+        
+    
+    
+            var marker_147897f886140cc6e2ce0bdefd633f61 = L.marker(
+                [33.4328486, -112.0067915],
+                {
+}
+            ).addTo(map_19c093c873d8e6928d9875c2021f2af1);
+        
+    
+        var popup_03b0446f4afbd365bb9a77c4a8c5eb35 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_c179fb82c27bb6e3ecd4e2f97eedeff3 = $(`&lt;div id="html_c179fb82c27bb6e3ecd4e2f97eedeff3" style="width: 100.0%; height: 100.0%;"&gt;Phoenix Sky Harbor Airport&lt;/div&gt;`)[0];
+                popup_03b0446f4afbd365bb9a77c4a8c5eb35.setContent(html_c179fb82c27bb6e3ecd4e2f97eedeff3);
+            
+        
+
+        marker_147897f886140cc6e2ce0bdefd633f61.bindPopup(popup_03b0446f4afbd365bb9a77c4a8c5eb35)
+        ;
+
+        
+    
+    
+            var marker_970cc6a3c17ce9c0f2a756b989545396 = L.marker(
+                [33.4461581, -112.0679106],
+                {
+}
+            ).addTo(map_19c093c873d8e6928d9875c2021f2af1);
+        
+    
+        var popup_617c119ce4f7c51e64fbbc403dc31ad6 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_2e823d481718eb3d2a69d6c009640c01 = $(`&lt;div id="html_2e823d481718eb3d2a69d6c009640c01" style="width: 100.0%; height: 100.0%;"&gt;Chase Field&lt;/div&gt;`)[0];
+                popup_617c119ce4f7c51e64fbbc403dc31ad6.setContent(html_2e823d481718eb3d2a69d6c009640c01);
+            
+        
+
+        marker_970cc6a3c17ce9c0f2a756b989545396.bindPopup(popup_617c119ce4f7c51e64fbbc403dc31ad6)
+        ;
+
+        
+    
+    
+            var marker_980858b3e1b9650bea733471d38cba2a = L.marker(
+                [33.4471114, -112.0745089],
+                {
+}
+            ).addTo(map_19c093c873d8e6928d9875c2021f2af1);
+        
+    
+        var popup_d46a755708189098b27ad5af0e976908 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_2b6d094ec8b391a4c63856e29376d78b = $(`&lt;div id="html_2b6d094ec8b391a4c63856e29376d78b" style="width: 100.0%; height: 100.0%;"&gt;Footprint Center&lt;/div&gt;`)[0];
+                popup_d46a755708189098b27ad5af0e976908.setContent(html_2b6d094ec8b391a4c63856e29376d78b);
+            
+        
+
+        marker_980858b3e1b9650bea733471d38cba2a.bindPopup(popup_d46a755708189098b27ad5af0e976908)
+        ;
+
+        
+    
+    
+            var marker_270811c68063753640e5d4d9f032eac4 = L.marker(
+                [33.4486699, -112.0666392],
+                {
+}
+            ).addTo(map_19c093c873d8e6928d9875c2021f2af1);
+        
+    
+        var popup_ed48538cb1381312317e8243dcc3dac3 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_12d3f0b602a0ac45a7c393135b3eafb0 = $(`&lt;div id="html_12d3f0b602a0ac45a7c393135b3eafb0" style="width: 100.0%; height: 100.0%;"&gt;Arizona Science Center&lt;/div&gt;`)[0];
+                popup_ed48538cb1381312317e8243dcc3dac3.setContent(html_12d3f0b602a0ac45a7c393135b3eafb0);
+            
+        
+
+        marker_270811c68063753640e5d4d9f032eac4.bindPopup(popup_ed48538cb1381312317e8243dcc3dac3)
+        ;
+
+        
+    
+    
+            var marker_2b044dd920191d33507551e68b29e2e0 = L.marker(
+                [33.4667444, -112.072103],
+                {
+}
+            ).addTo(map_19c093c873d8e6928d9875c2021f2af1);
+        
+    
+        var popup_31aab838c35a846db68f335aa1d6675e = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_cf2b587ea2da7cbb945893be17745273 = $(`&lt;div id="html_cf2b587ea2da7cbb945893be17745273" style="width: 100.0%; height: 100.0%;"&gt;Phoenix Art Museum&lt;/div&gt;`)[0];
+                popup_31aab838c35a846db68f335aa1d6675e.setContent(html_cf2b587ea2da7cbb945893be17745273);
+            
+        
+
+        marker_2b044dd920191d33507551e68b29e2e0.bindPopup(popup_31aab838c35a846db68f335aa1d6675e)
+        ;
+
+        
+    
+    
+            var marker_6ff171d6c7049faa168e04559f685f9c = L.marker(
+                [33.4715984, -112.0721993],
+                {
+}
+            ).addTo(map_19c093c873d8e6928d9875c2021f2af1);
+        
+    
+        var popup_b901eb52da7b4fb98ff701f5e79d20fb = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_07ddb04c748226a8bb28082b7263531e = $(`&lt;div id="html_07ddb04c748226a8bb28082b7263531e" style="width: 100.0%; height: 100.0%;"&gt;Heard Museum&lt;/div&gt;`)[0];
+                popup_b901eb52da7b4fb98ff701f5e79d20fb.setContent(html_07ddb04c748226a8bb28082b7263531e);
+            
+        
+
+        marker_6ff171d6c7049faa168e04559f685f9c.bindPopup(popup_b901eb52da7b4fb98ff701f5e79d20fb)
+        ;
+
+        
+    
+    
+            var marker_86cf14f68a088806447621346ac02184 = L.marker(
+                [33.4620569, -111.9450006],
+                {
+}
+            ).addTo(map_19c093c873d8e6928d9875c2021f2af1);
+        
+    
+        var popup_5b509f42e8d428b57d5640057cebaccc = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_967eea4413b116b018299d4cb5ca75f0 = $(`&lt;div id="html_967eea4413b116b018299d4cb5ca75f0" style="width: 100.0%; height: 100.0%;"&gt;Desert Botanical Garden&lt;/div&gt;`)[0];
+                popup_5b509f42e8d428b57d5640057cebaccc.setContent(html_967eea4413b116b018299d4cb5ca75f0);
+            
+        
+
+        marker_86cf14f68a088806447621346ac02184.bindPopup(popup_5b509f42e8d428b57d5640057cebaccc)
+        ;
+
+        
+    
+    
+            var marker_5b348717274db9ff730610bb587aafe0 = L.marker(
+                [33.4496185, -111.9463685],
+                {
+}
+            ).addTo(map_19c093c873d8e6928d9875c2021f2af1);
+        
+    
+        var popup_4e7cde5b115a7e6153536086408a2191 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_670ee5be300635601c7b191f6f6eb34c = $(`&lt;div id="html_670ee5be300635601c7b191f6f6eb34c" style="width: 100.0%; height: 100.0%;"&gt;Phoenix Zoo&lt;/div&gt;`)[0];
+                popup_4e7cde5b115a7e6153536086408a2191.setContent(html_670ee5be300635601c7b191f6f6eb34c);
+            
+        
+
+        marker_5b348717274db9ff730610bb587aafe0.bindPopup(popup_4e7cde5b115a7e6153536086408a2191)
+        ;
+
+        
+    
+    
+            var marker_7db6b5db8ec27b2d02e8b2ffe1211c4a = L.marker(
+                [33.6675082, -111.9783359],
+                {
+}
+            ).addTo(map_19c093c873d8e6928d9875c2021f2af1);
+        
+    
+        var popup_c723ecbaf1754deae256581d84945dfa = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_9f350140d7527e7988bbb4db8dc433e7 = $(`&lt;div id="html_9f350140d7527e7988bbb4db8dc433e7" style="width: 100.0%; height: 100.0%;"&gt;Musical Instrument Museum&lt;/div&gt;`)[0];
+                popup_c723ecbaf1754deae256581d84945dfa.setContent(html_9f350140d7527e7988bbb4db8dc433e7);
+            
+        
+
+        marker_7db6b5db8ec27b2d02e8b2ffe1211c4a.bindPopup(popup_c723ecbaf1754deae256581d84945dfa)
+        ;
+
+        
+    
+    
+            var marker_5847757b6b481d800394738f749d6e27 = L.marker(
+                [33.5038818, -111.9263171],
+                {
+}
+            ).addTo(map_19c093c873d8e6928d9875c2021f2af1);
+        
+    
+        var popup_e9afb9e26205b25410c98ff277db420e = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_980de97571d1c8aab6e3ef39d45f4bfb = $(`&lt;div id="html_980de97571d1c8aab6e3ef39d45f4bfb" style="width: 100.0%; height: 100.0%;"&gt;Scottsdale Fashion Square&lt;/div&gt;`)[0];
+                popup_e9afb9e26205b25410c98ff277db420e.setContent(html_980de97571d1c8aab6e3ef39d45f4bfb);
+            
+        
+
+        marker_5847757b6b481d800394738f749d6e27.bindPopup(popup_e9afb9e26205b25410c98ff277db420e)
+        ;
+
+        
+    
+    
+            var marker_c0ee6544953228dedc0f4df6e7bd3aa2 = L.marker(
+                [33.6393246, -111.925166],
+                {
+}
+            ).addTo(map_19c093c873d8e6928d9875c2021f2af1);
+        
+    
+        var popup_a05a7088adc736efe019192453e61977 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_bb30c3e56386e338f069312a9572b30c = $(`&lt;div id="html_bb30c3e56386e338f069312a9572b30c" style="width: 100.0%; height: 100.0%;"&gt;Taliesin West&lt;/div&gt;`)[0];
+                popup_a05a7088adc736efe019192453e61977.setContent(html_bb30c3e56386e338f069312a9572b30c);
+            
+        
+
+        marker_c0ee6544953228dedc0f4df6e7bd3aa2.bindPopup(popup_a05a7088adc736efe019192453e61977)
+        ;
+
+        
+    
+    
+            var marker_fdca76a54e8cb5137a4680d3910fb847 = L.marker(
+                [33.4141572, -111.8302921],
+                {
+}
+            ).addTo(map_19c093c873d8e6928d9875c2021f2af1);
+        
+    
+        var popup_a484205d7b481d876e0a88e75ab9c459 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_145e83a440d8a3ee54f42abd0288892a = $(`&lt;div id="html_145e83a440d8a3ee54f42abd0288892a" style="width: 100.0%; height: 100.0%;"&gt;Mesa Arts Center&lt;/div&gt;`)[0];
+                popup_a484205d7b481d876e0a88e75ab9c459.setContent(html_145e83a440d8a3ee54f42abd0288892a);
+            
+        
+
+        marker_fdca76a54e8cb5137a4680d3910fb847.bindPopup(popup_a484205d7b481d876e0a88e75ab9c459)
+        ;
+
+        
+    
+    
+            var marker_c0ca323c0c134e8b4252951949ea323c = L.marker(
+                [33.5277957, -112.2626719],
+                {
+}
+            ).addTo(map_19c093c873d8e6928d9875c2021f2af1);
+        
+    
+        var popup_5c2d4dd1ed9bdd2a12e81cfc14922f43 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_893dc37eee396e38c01664373a40c156 = $(`&lt;div id="html_893dc37eee396e38c01664373a40c156" style="width: 100.0%; height: 100.0%;"&gt;State Farm Stadium&lt;/div&gt;`)[0];
+                popup_5c2d4dd1ed9bdd2a12e81cfc14922f43.setContent(html_893dc37eee396e38c01664373a40c156);
+            
+        
+
+        marker_c0ca323c0c134e8b4252951949ea323c.bindPopup(popup_5c2d4dd1ed9bdd2a12e81cfc14922f43)
         ;
 
         
